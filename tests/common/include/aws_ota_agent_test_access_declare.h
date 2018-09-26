@@ -52,3 +52,5 @@ DocParseErr_t TEST_OTA_prvParseJSONbyModel( const char * pcJSON,
                                             JSON_DocModel_t * pxDocModel );
 
 #endif /* ifndef _AWS_OTA_AGENT_TEST_ACCESS_DECLARE_H_ */
+
+#include "aws_ota_agent_test_access_define.h"

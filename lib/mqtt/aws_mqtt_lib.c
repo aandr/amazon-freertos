@@ -342,7 +342,7 @@
  *
  * @return Handle to a free buffer if one is available, NULL otherwise.
  */
-static MQTTBufferHandle_t prvGetFreeBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvGetFreeBuffer( MQTTContext_t * pxMQTTContext,
                                             uint32_t ulBufferLength );
 
 /**
@@ -354,7 +354,7 @@ static MQTTBufferHandle_t prvGetFreeBuffer( MQTTContext_t * pxMQTTContext,
  * @param[in] pxMQTTContext The MQTT context to which to return the buffer.
  * @param[in] xBuffer The buffer to return.
  */
-static void prvReturnBuffer( MQTTContext_t * pxMQTTContext,
+void prvReturnBuffer( MQTTContext_t * pxMQTTContext,
                              MQTTBufferHandle_t xBuffer );
 
 /**
@@ -372,7 +372,7 @@ static void prvReturnBuffer( MQTTContext_t * pxMQTTContext,
  *
  * @return The handle to the buffer if it finds one, NULL otherwise.
  */
-static MQTTBufferHandle_t prvPacketTypeFlagsGetTxBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvPacketTypeFlagsGetTxBuffer( MQTTContext_t * pxMQTTContext,
                                                          uint8_t ucPacketType,
                                                          uint8_t ucFlags );
 
@@ -393,7 +393,7 @@ static MQTTBufferHandle_t prvPacketTypeFlagsGetTxBuffer( MQTTContext_t * pxMQTTC
  *
  * @return The handle to the buffer if it finds one, NULL otherwise.
  */
-static MQTTBufferHandle_t prvPacketTypeFlagsIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvPacketTypeFlagsIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
                                                                    uint8_t ucPacketType,
                                                                    uint8_t ucFlags,
                                                                    uint16_t usPacketIdentifier );
@@ -413,7 +413,7 @@ static MQTTBufferHandle_t prvPacketTypeFlagsIdentifierGetTxBuffer( MQTTContext_t
  *
  * @return The handle to the buffer if it finds one, NULL otherwise.
  */
-static MQTTBufferHandle_t prvPacketTypeIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvPacketTypeIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
                                                               uint8_t ucPacketType,
                                                               uint16_t usPacketIdentifier );
 
@@ -423,7 +423,7 @@ static MQTTBufferHandle_t prvPacketTypeIdentifierGetTxBuffer( MQTTContext_t * px
  *
  * @param[in] pxMQTTContext The MQTT context to reset the Rx message state.
  */
-static void prvResetRxMessageState( MQTTContext_t * pxMQTTContext );
+void prvResetRxMessageState( MQTTContext_t * pxMQTTContext );
 
 /**
  * @brief Resets the MQTT contexts and puts in "not connected" state.
@@ -435,7 +435,7 @@ static void prvResetRxMessageState( MQTTContext_t * pxMQTTContext );
  *
  * @param[in] pxMQTTContext The MQTT context to reset.
  */
-static void prvResetMQTTContext( MQTTContext_t * pxMQTTContext );
+void prvResetMQTTContext( MQTTContext_t * pxMQTTContext );
 
 /**
  * @brief Gets the current tick count.
@@ -449,7 +449,7 @@ static void prvResetMQTTContext( MQTTContext_t * pxMQTTContext );
  * @return The current tick count if the user has supplied GetTicks function,
  * zero otherwise.
  */
-static uint64_t prvGetCurrentTickCount( MQTTContext_t * pxMQTTContext );
+uint64_t prvGetCurrentTickCount( MQTTContext_t * pxMQTTContext );
 
 /**
  * @brief Compares the recorded tick count with the current tick count to see
@@ -469,7 +469,7 @@ static uint64_t prvGetCurrentTickCount( MQTTContext_t * pxMQTTContext );
  *
  * @return eMQTTTrue if the time has elapsed, eMQTTFalse otherwise.
  */
-static MQTTBool_t prvIsTimeElapsed( uint64_t * pxRecordedTickCount,
+MQTTBool_t prvIsTimeElapsed( uint64_t * pxRecordedTickCount,
                                     uint64_t xCurrentTickCount,
                                     uint32_t * pulRemainingTicks );
 
@@ -486,7 +486,7 @@ static MQTTBool_t prvIsTimeElapsed( uint64_t * pxRecordedTickCount,
  *
  * @return eMQTTSuccess if send is successful, eMQTTSendFailed otherwise.
  */
-static MQTTReturnCode_t prvSendData( MQTTContext_t * pxMQTTContext,
+MQTTReturnCode_t prvSendData( MQTTContext_t * pxMQTTContext,
                                      const uint8_t * const pucData,
                                      uint32_t ulDataLength );
 
@@ -803,7 +803,7 @@ static uint8_t prvDecodeRemainingLength( const uint8_t * const pucEncodedRemaini
  */
 #if ( mqttconfigENABLE_SUBSCRIPTION_MANAGEMENT == 1 )
 
-    static MQTTTopicFilterType_t prvGetTopicFilterType( const uint8_t * const pucTopicFilter,
+    MQTTTopicFilterType_t prvGetTopicFilterType( const uint8_t * const pucTopicFilter,
                                                         uint16_t usTopicFilterLength );
 
 #endif /* mqttconfigENABLE_SUBSCRIPTION_MANAGEMENT */
@@ -832,7 +832,7 @@ static uint8_t prvDecodeRemainingLength( const uint8_t * const pucEncodedRemaini
  */
 #if ( mqttconfigENABLE_SUBSCRIPTION_MANAGEMENT == 1 )
 
-    static MQTTBool_t prvDoesTopicMatchTopicFilter( const uint8_t * const pucTopic,
+    MQTTBool_t prvDoesTopicMatchTopicFilter( const uint8_t * const pucTopic,
                                                     uint16_t usTopicLength,
                                                     const uint8_t * const pucTopicFilter,
                                                     uint16_t usTopicFilterLength );
@@ -840,7 +840,7 @@ static uint8_t prvDecodeRemainingLength( const uint8_t * const pucEncodedRemaini
 #endif /* mqttconfigENABLE_SUBSCRIPTION_MANAGEMENT */
 /*-----------------------------------------------------------*/
 
-static MQTTBufferHandle_t prvGetFreeBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvGetFreeBuffer( MQTTContext_t * pxMQTTContext,
                                             uint32_t ulBufferLength )
 {
     MQTTBufferHandle_t xFreeBufferHandle = NULL;
@@ -871,7 +871,7 @@ static MQTTBufferHandle_t prvGetFreeBuffer( MQTTContext_t * pxMQTTContext,
 }
 /*-----------------------------------------------------------*/
 
-static void prvReturnBuffer( MQTTContext_t * pxMQTTContext,
+void prvReturnBuffer( MQTTContext_t * pxMQTTContext,
                              MQTTBufferHandle_t xBuffer )
 {
     if( xBuffer != NULL )
@@ -888,7 +888,7 @@ static void prvReturnBuffer( MQTTContext_t * pxMQTTContext,
 }
 /*-----------------------------------------------------------*/
 
-static MQTTBufferHandle_t prvPacketTypeFlagsGetTxBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvPacketTypeFlagsGetTxBuffer( MQTTContext_t * pxMQTTContext,
                                                          uint8_t ucPacketType,
                                                          uint8_t ucFlags )
 {
@@ -921,7 +921,7 @@ static MQTTBufferHandle_t prvPacketTypeFlagsGetTxBuffer( MQTTContext_t * pxMQTTC
 }
 /*-----------------------------------------------------------*/
 
-static MQTTBufferHandle_t prvPacketTypeFlagsIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvPacketTypeFlagsIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
                                                                    uint8_t ucPacketType,
                                                                    uint8_t ucFlags,
                                                                    uint16_t usPacketIdentifier )
@@ -956,7 +956,7 @@ static MQTTBufferHandle_t prvPacketTypeFlagsIdentifierGetTxBuffer( MQTTContext_t
 }
 /*-----------------------------------------------------------*/
 
-static MQTTBufferHandle_t prvPacketTypeIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
+MQTTBufferHandle_t prvPacketTypeIdentifierGetTxBuffer( MQTTContext_t * pxMQTTContext,
                                                               uint8_t ucPacketType,
                                                               uint16_t usPacketIdentifier )
 {
@@ -989,7 +989,7 @@ static MQTTBufferHandle_t prvPacketTypeIdentifierGetTxBuffer( MQTTContext_t * px
 }
 /*-----------------------------------------------------------*/
 
-static void prvResetRxMessageState( MQTTContext_t * pxMQTTContext )
+void prvResetRxMessageState( MQTTContext_t * pxMQTTContext )
 {
     /* Prepares the context to receive the next message. */
     pxMQTTContext->xRxMessageState.ucRemaingingLengthFieldBytes = 0;
@@ -1001,7 +1001,7 @@ static void prvResetRxMessageState( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static void prvResetMQTTContext( MQTTContext_t * pxMQTTContext )
+void prvResetMQTTContext( MQTTContext_t * pxMQTTContext )
 {
     Link_t * pxLink, * pxTempLink;
     MQTTBufferHandle_t xBufferHandle;
@@ -1041,7 +1041,7 @@ static void prvResetMQTTContext( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static uint64_t prvGetCurrentTickCount( MQTTContext_t * pxMQTTContext )
+uint64_t prvGetCurrentTickCount( MQTTContext_t * pxMQTTContext )
 {
     uint64_t uxCurrentTickCount = 0;
 
@@ -1060,7 +1060,7 @@ static uint64_t prvGetCurrentTickCount( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static MQTTBool_t prvIsTimeElapsed( uint64_t * pxRecordedTickCount,
+MQTTBool_t prvIsTimeElapsed( uint64_t * pxRecordedTickCount,
                                     uint64_t xCurrentTickCount,
                                     uint32_t * pulRemainingTicks )
 {
@@ -1099,7 +1099,7 @@ static MQTTBool_t prvIsTimeElapsed( uint64_t * pxRecordedTickCount,
 }
 /*-----------------------------------------------------------*/
 
-static MQTTReturnCode_t prvSendData( MQTTContext_t * pxMQTTContext,
+MQTTReturnCode_t prvSendData( MQTTContext_t * pxMQTTContext,
                                      const uint8_t * const pucData,
                                      uint32_t ulDataLength )
 {
@@ -1121,7 +1121,7 @@ static MQTTReturnCode_t prvSendData( MQTTContext_t * pxMQTTContext,
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedFixedHeaderOnlyMQTTPacket( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedFixedHeaderOnlyMQTTPacket( MQTTContext_t * pxMQTTContext )
 {
     MQTTEventCallbackParams_t xEventCallbackParams;
 
@@ -1144,7 +1144,7 @@ static void prvProcessReceivedFixedHeaderOnlyMQTTPacket( MQTTContext_t * pxMQTTC
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedMQTTPacket( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedMQTTPacket( MQTTContext_t * pxMQTTContext )
 {
     MQTTEventCallbackParams_t xEventCallbackParams;
 
@@ -1187,7 +1187,7 @@ static void prvProcessReceivedMQTTPacket( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedCONNACK( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedCONNACK( MQTTContext_t * pxMQTTContext )
 {
     MQTTBufferHandle_t xConnectTxBuffer;
     MQTTEventCallbackParams_t xEventCallbackParams;
@@ -1343,7 +1343,7 @@ static void prvProcessReceivedCONNACK( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedSUBACK( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedSUBACK( MQTTContext_t * pxMQTTContext )
 {
     MQTTBufferHandle_t xSubscribeTxBuffer;
     MQTTEventCallbackParams_t xEventCallbackParams;
@@ -1447,7 +1447,7 @@ static void prvProcessReceivedSUBACK( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedUNSUBACK( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedUNSUBACK( MQTTContext_t * pxMQTTContext )
 {
     MQTTBufferHandle_t xUnsubscribeTxBuffer;
     MQTTEventCallbackParams_t xEventCallbackParams;
@@ -1535,7 +1535,7 @@ static void prvProcessReceivedUNSUBACK( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedPUBACK( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedPUBACK( MQTTContext_t * pxMQTTContext )
 {
     MQTTBufferHandle_t xPublishTxBuffer;
     MQTTEventCallbackParams_t xEventCallbackParams;
@@ -1615,7 +1615,7 @@ static void prvProcessReceivedPUBACK( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedPINGRESP( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedPINGRESP( MQTTContext_t * pxMQTTContext )
 {
     MQTTEventCallbackParams_t xEventCallbackParams;
     MQTTBool_t xValidPingResponse = eMQTTFalse;
@@ -1669,7 +1669,7 @@ static void prvProcessReceivedPINGRESP( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static void prvProcessReceivedPublish( MQTTContext_t * pxMQTTContext )
+void prvProcessReceivedPublish( MQTTContext_t * pxMQTTContext )
 {
     MQTTEventCallbackParams_t xEventCallbackParams;
     uint8_t ucPacketIdentiferLength; /* Length in bytes taken by the packet identifier field in the received publish packet. */
@@ -1772,7 +1772,7 @@ static void prvProcessReceivedPublish( MQTTContext_t * pxMQTTContext )
 }
 /*-----------------------------------------------------------*/
 
-static MQTTBool_t prvInvokeCallback( MQTTContext_t * pxMQTTContext,
+MQTTBool_t prvInvokeCallback( MQTTContext_t * pxMQTTContext,
                                      MQTTEventCallbackParams_t * pxEventCallbackParams )
 {
     MQTTBool_t xBufferOwnershipTaken = eMQTTFalse;
@@ -1812,7 +1812,7 @@ static MQTTBool_t prvInvokeCallback( MQTTContext_t * pxMQTTContext,
 }
 /*-----------------------------------------------------------*/
 
-static uint8_t * prvWriteString( uint8_t * pucDestination,
+uint8_t * prvWriteString( uint8_t * pucDestination,
                                  const uint8_t * const pucLastByteInBuffer,
                                  const uint8_t * const pucString,
                                  uint16_t usStringLength )
@@ -1845,7 +1845,7 @@ static uint8_t * prvWriteString( uint8_t * pucDestination,
 }
 /*-----------------------------------------------------------*/
 
-static uint8_t prvSizeOfRemainingLength( uint32_t ulRemainingLength )
+uint8_t prvSizeOfRemainingLength( uint32_t ulRemainingLength )
 {
     uint8_t ucRemainingLengthFieldBytes = 0;
 
@@ -1879,7 +1879,7 @@ static uint8_t prvSizeOfRemainingLength( uint32_t ulRemainingLength )
 }
 /*-----------------------------------------------------------*/
 
-static uint8_t prvEncodeRemainingLength( uint32_t ulRemainingLength,
+uint8_t prvEncodeRemainingLength( uint32_t ulRemainingLength,
                                          uint8_t * const pucEncodedRemainingLength,
                                          const uint8_t * const pucLastByteInBuffer )
 {
@@ -1924,7 +1924,7 @@ static uint8_t prvEncodeRemainingLength( uint32_t ulRemainingLength,
 }
 /*-----------------------------------------------------------*/
 
-static uint8_t prvDecodeRemainingLength( const uint8_t * const pucEncodedRemainingLength,
+uint8_t prvDecodeRemainingLength( const uint8_t * const pucEncodedRemainingLength,
                                          uint32_t * const pulRemainingLength )
 {
     uint8_t ucBytesRead, ucDecodedByte;
@@ -2229,7 +2229,7 @@ static uint8_t prvDecodeRemainingLength( const uint8_t * const pucEncodedRemaini
 
 #if ( mqttconfigENABLE_SUBSCRIPTION_MANAGEMENT == 1 )
 
-    static MQTTTopicFilterType_t prvGetTopicFilterType( const uint8_t * const pucTopicFilter,
+    MQTTTopicFilterType_t prvGetTopicFilterType( const uint8_t * const pucTopicFilter,
                                                         uint16_t usTopicFilterLength )
     {
         MQTTTopicFilterType_t xTopicFilterType = eMQTTTopicFilterTypeSimple;
@@ -2321,7 +2321,7 @@ static uint8_t prvDecodeRemainingLength( const uint8_t * const pucEncodedRemaini
 
 #if ( mqttconfigENABLE_SUBSCRIPTION_MANAGEMENT == 1 )
 
-    static MQTTBool_t prvDoesTopicMatchTopicFilter( const uint8_t * const pucTopic,
+    MQTTBool_t prvDoesTopicMatchTopicFilter( const uint8_t * const pucTopic,
                                                     uint16_t usTopicLength,
                                                     const uint8_t * const pucTopicFilter,
                                                     uint16_t usTopicFilterLength )

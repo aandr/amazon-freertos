@@ -40,7 +40,7 @@
 #if defined(configINCLUDE_PLATFORM_H_INSTEAD_OF_IODEFINE_H) && (configINCLUDE_PLATFORM_H_INSTEAD_OF_IODEFINE_H == 1)
 #include "platform.h"
 #else
-#include "iodefine.h"
+#include "platform.h" // #include "iodefine.h"
 #endif
 
 /*-----------------------------------------------------------*/

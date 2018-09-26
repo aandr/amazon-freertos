@@ -29,6 +29,7 @@
 #include "unity_fixture.h"
 #include "unity.h"
 #include "aws_greengrass_discovery_test_access_declare.h"
+#include "aws_greengrass_discovery_test_access_define.h"
 #include "aws_test_runner.h"
 
 #define ggdLOOP_BACK_IP                    "127.0.0.1"

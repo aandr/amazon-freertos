@@ -294,7 +294,7 @@ static MQTTAgentReturnCode_t prvPublishMessage(void * pvClient, const char * con
 
 /* Called when the OTA agent receives a file data block message. */
 
-static IngestResult_t prvIngestDataBlock( OTA_FileContext_t * C, const char * pcRawMsg, uint32_t ulMsgSize, OTA_Err_t * pxCloseResult );
+IngestResult_t prvIngestDataBlock( OTA_FileContext_t * C, const char * pcRawMsg, uint32_t ulMsgSize, OTA_Err_t * pxCloseResult );
 
 /* Called when the OTA agent receives an OTA version message. */
 
@@ -306,15 +306,15 @@ static OTA_FileContext_t *prvGetFreeContext( void );
 
 /* Parse a JSON document using the specified document model. */
 
-static DocParseErr_t prvParseJSONbyModel(const char *pcJSON, uint32_t ulMsgLen, JSON_DocModel_t *pxDocModel );
+DocParseErr_t prvParseJSONbyModel(const char *pcJSON, uint32_t ulMsgLen, JSON_DocModel_t *pxDocModel );
 
 /* Parse the OTA job document, validate and return the populated OTA context if valid. */
 
-static OTA_FileContext_t *prvParseJobDoc(const char *pcJSON, uint32_t ulMsgLen );
+OTA_FileContext_t *prvParseJobDoc(const char *pcJSON, uint32_t ulMsgLen );
 
 /* Close an open OTA file context and free it. */
 
-static bool_t prvOTA_Close(OTA_FileContext_t * const C);
+bool_t prvOTA_Close(OTA_FileContext_t * const C);
 
 /* Called when a MQTT message is received on an OTA agent topic of interest. */
 
@@ -1563,7 +1563,7 @@ static void prvStopRequestTimer( OTA_FileContext_t * C )
 
 /* Close an existing OTA context and free its resources. */
 
-static bool_t prvOTA_Close( OTA_FileContext_t * const C )
+bool_t prvOTA_Close( OTA_FileContext_t * const C )
 {
     DEFINE_OTA_METHOD_NAME("prvOTA_Close");
 
@@ -1696,7 +1696,7 @@ static DocParseErr_t prvSearchModelForTokenKey( JSON_DocModel_t *pxDocModel, con
 
 /* Extract the desired fields from the JSON document based on the specified document model. */
 
-static DocParseErr_t prvParseJSONbyModel( const char *pcJSON, uint32_t ulMsgLen, JSON_DocModel_t *pxDocModel )
+DocParseErr_t prvParseJSONbyModel( const char *pcJSON, uint32_t ulMsgLen, JSON_DocModel_t *pxDocModel )
 {
     DEFINE_OTA_METHOD_NAME("prvParseJSONbyModel");
 
@@ -2049,7 +2049,7 @@ static DocParseErr_t prvInitDocModel( JSON_DocModel_t *pxDocModel, const JSON_Do
  * OTA context if valid otherwise return NULL.
  */
 
-static OTA_FileContext_t *prvParseJobDoc(const char *pcJSON, uint32_t ulMsgLen )
+OTA_FileContext_t *prvParseJobDoc(const char *pcJSON, uint32_t ulMsgLen )
 {
     DEFINE_OTA_METHOD_NAME("prvParseJobDoc");
 
@@ -2334,7 +2334,7 @@ static OTA_FileContext_t* prvProcessOTAJobMsg( const char *pcRawMsg, uint32_t ul
  * reboot the system and perform a self test phase. If the close or signature check fails, abort
  * the file transfer and return the result and any available details to the caller.
  */
-static IngestResult_t prvIngestDataBlock( OTA_FileContext_t * C,
+IngestResult_t prvIngestDataBlock( OTA_FileContext_t * C,
                                           const char * pcRawMsg,
                                           uint32_t ulMsgSize,
                                           OTA_Err_t * pxCloseResult )

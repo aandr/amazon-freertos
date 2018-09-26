@@ -40,3 +40,5 @@
 #endif
 
 #endif /* ifndef _OTA_AGENT_TEST_ACCESS_DECLARE_H_ */
+
+#include "aws_ota_pal_test_access_define.h"

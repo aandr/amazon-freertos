@@ -249,6 +249,11 @@ WIFIReturnCode_t WIFI_StartAP( void )
 }
 /*-----------------------------------------------------------*/
 
+
+BaseType_t WIFI_IsConnected(void) {
+	return true;
+}
+
 WIFIReturnCode_t WIFI_StopAP( void )
 {
     /* FIX ME. */

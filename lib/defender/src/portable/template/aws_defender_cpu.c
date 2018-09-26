@@ -26,12 +26,10 @@
 
 int DEFENDER_CpuLoadGet( void )
 {
-    #error return CPU as a percentage * cores.
-
-    return -1;
+	return 1; // FIXME
 }
 
 void DEFENDER_CpuLoadRefresh( void )
 {
-    #error measure and store CPU percentage * cores.
+	// FIXME
 }

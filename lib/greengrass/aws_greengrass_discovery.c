@@ -112,36 +112,38 @@
  * duplicate code between auto connect and custom connect.
  */
 /** @{ */
-static BaseType_t prvGGDJsoneq( const char * pcJson,     /*lint !e971 can use char without signed/unsigned. */
+// FIXME this had to be made not static, because of aws_greengrass_discovery_test_access_define.h
+
+BaseType_t prvGGDJsoneq( const char * pcJson,     /*lint !e971 can use char without signed/unsigned. */
                                 const jsmntok_t * const pxTok,
                                 const char * pcString ); /*lint !e971 can use char without signed/unsigned. */
-static void prvCheckMatch( const char * pcJSONFile,      /*lint !e971 can use char without signed/unsigned. */
+void prvCheckMatch( const char * pcJSONFile,      /*lint !e971 can use char without signed/unsigned. */
                            const jsmntok_t * pxTok,
                            const uint32_t ulTokenIndex,
                            BaseType_t * pxMatch,
                            const char * pcMatchCategory,   /*lint !e971 can use char without signuint32_t ulNbTokensed/unsigned. */
                            const char * pcMatchString,     /*lint !e971 can use char without signed/unsigned. */
                            const BaseType_t xAutoSelectFlag );
-static BaseType_t prvGGDGetCertificate( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
+BaseType_t prvGGDGetCertificate( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
                                         const HostParameters_t * pxHostParameters,
                                         const BaseType_t xAutoSelectFlag,
                                         const jsmntok_t * pxTok,
                                         const uint32_t ulNbTokens,
                                         GGD_HostAddressData_t * pxHostAddressData );
-static BaseType_t prvGGDGetIPOnInterface( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
+BaseType_t prvGGDGetIPOnInterface( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
                                           const uint8_t ucTargetInterface,
                                           const jsmntok_t * pxTok,
                                           const uint32_t ulNbTokens,
                                           GGD_HostAddressData_t * pxHostAddressData,
                                           uint32_t * pulTokenIndex,
                                           uint8_t * pucCurrentInterface );
-static BaseType_t prvGGDGetCore( const char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
+BaseType_t prvGGDGetCore( const char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
                                  const HostParameters_t * const pxHostParameters,
                                  const BaseType_t xAutoSelectFlag,
                                  const jsmntok_t * pxTok,
                                  const uint32_t ulNbTokens,
                                  uint32_t * pulTokenIndex );
-static BaseType_t prvIsIPvalid( const char * pcIP,
+BaseType_t prvIsIPvalid( const char * pcIP,
                                 uint32_t ulIPlength );
 /** @} */
 
@@ -151,7 +153,7 @@ static BaseType_t prvIsIPvalid( const char * pcIP,
  * Small helper function that return true when the
  * length field is found in the html header.
  */
-static BaseType_t prvCheckForContentLengthString( uint8_t * pucIndex,
+BaseType_t prvCheckForContentLengthString( uint8_t * pucIndex,
                                                   const char cNewChar ); /*lint !e971 can use char without signed/unsigned. */
 
 /*-----------------------------------------------------------*/
@@ -586,7 +588,7 @@ BaseType_t GGD_GetIPandCertificateFromJSON( char * pcJSONFile, /*lint !e971 can 
 /*-----------------------------------------------------------*/
 
 /* Return true if the string " pcString" is found inside the token pxTok in JSON file pcJson. */
-static BaseType_t prvGGDJsoneq( const char * pcJson,    /*lint !e971 can use char without signed/unsigned. */
+BaseType_t prvGGDJsoneq( const char * pcJson,    /*lint !e971 can use char without signed/unsigned. */
                                 const jsmntok_t * const pxTok,
                                 const char * pcString ) /*lint !e971 can use char without signed/unsigned. */
 {
@@ -611,7 +613,7 @@ static BaseType_t prvGGDJsoneq( const char * pcJson,    /*lint !e971 can use cha
 /*-----------------------------------------------------------*/
 
 
-static void prvCheckMatch( const char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
+void prvCheckMatch( const char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
                            const jsmntok_t * pxTok,
                            const uint32_t ulTokenIndex,
                            BaseType_t * pxMatch,
@@ -647,7 +649,7 @@ static void prvCheckMatch( const char * pcJSONFile, /*lint !e971 can use char wi
 }
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvGGDGetCore( const char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
+BaseType_t prvGGDGetCore( const char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
                                  const HostParameters_t * const pxHostParameters,
                                  const BaseType_t xAutoSelectFlag,
                                  const jsmntok_t * pxTok,
@@ -706,7 +708,7 @@ static BaseType_t prvGGDGetCore( const char * pcJSONFile, /*lint !e971 can use c
 }
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvGGDGetCertificate( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
+BaseType_t prvGGDGetCertificate( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
                                         const HostParameters_t * pxHostParameters,
                                         const BaseType_t xAutoSelectFlag,
                                         const jsmntok_t * pxTok,
@@ -788,7 +790,7 @@ static BaseType_t prvGGDGetCertificate( char * pcJSONFile, /*lint !e971 can use 
 }
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvIsIPvalid( const char * pcIP,
+BaseType_t prvIsIPvalid( const char * pcIP,
                                 uint32_t ulIPlength )
 {
     BaseType_t xStatus;
@@ -809,7 +811,7 @@ static BaseType_t prvIsIPvalid( const char * pcIP,
 
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvGGDGetIPOnInterface( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
+BaseType_t prvGGDGetIPOnInterface( char * pcJSONFile, /*lint !e971 can use char without signed/unsigned. */
                                           const uint8_t ucTargetInterface,
                                           const jsmntok_t * pxTok,
                                           const uint32_t ulNbTokens,
@@ -860,7 +862,7 @@ static BaseType_t prvGGDGetIPOnInterface( char * pcJSONFile, /*lint !e971 can us
 }
 /*-----------------------------------------------------------*/
 
-static BaseType_t prvCheckForContentLengthString( uint8_t * pucIndex,
+BaseType_t prvCheckForContentLengthString( uint8_t * pucIndex,
                                                   const char cNewChar ) /*lint !e971 can use char without signed/unsigned. */
 {
     BaseType_t xMatch = pdFALSE;

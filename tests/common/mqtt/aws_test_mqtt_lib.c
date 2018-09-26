@@ -37,6 +37,8 @@
 /* MQTT Lib includes. */
 #include "aws_mqtt_lib.h"
 #include "aws_mqtt_lib_test_access_declare.h"
+#include "aws_mqtt_lib_test_access_define.h"
+
 #include "aws_mqtt_agent_config.h"
 
 /* Bufferpool includes. */

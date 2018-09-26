@@ -30,6 +30,8 @@
  * Needed for testing private functions.
  */
 
+#include "aws_greengrass_discovery_test_access_declare.h"
+
 #ifndef _AWS_GREENGRASS_DISCOVERY_TEST_ACCESS_DEFINE_H_
 #define _AWS_GREENGRASS_DISCOVERY_TEST_ACCESS_DEFINE_H_
 

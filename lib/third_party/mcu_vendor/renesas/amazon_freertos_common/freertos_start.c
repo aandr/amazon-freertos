@@ -77,7 +77,7 @@ Exported global variables (to be accessed by other files)
 void vApplicationSetupTimerInterrupt(void);
 
 /* Hook functions used by FreeRTOS. */
-void vAssertCalled(void);
+//void vAssertCalled(void);
 void vApplicationIdleHook(void);
 void vApplicationTickHook(void);
 void vApplicationMallocFailedHook(void);

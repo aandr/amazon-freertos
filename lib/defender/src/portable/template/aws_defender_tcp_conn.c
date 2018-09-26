@@ -26,12 +26,10 @@
 
 int DEFENDER_TcpConnGet( void )
 {
-    #error Return count of TCP connections
-
-    return -1;
+	return 1; // FIXME
 }
 
 void DEFENDER_TcpConnRefresh( void )
 {
-    #error Caluculate and store the count of TCP connections
+	return 1; // FIXME
 }

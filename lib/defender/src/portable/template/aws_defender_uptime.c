@@ -23,15 +23,17 @@
  * http://www.FreeRTOS.org
  */
 #include "aws_defender_uptime.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 int DEFENDER_UptimeSecondsGet( void )
 {
-    #error Return uptime in seconds since the last reset or power on event
 
-    return -1;
+	return xTaskGetTickCount() / 1000;
 }
 
+static uint32_t uptime = 0;
 void DEFENDER_UptimeRefresh( void )
 {
-    #error Compute and store the uptime in seconds since the last reset or power on event
+	uptime = xTaskGetTickCount() / 1000;
 }

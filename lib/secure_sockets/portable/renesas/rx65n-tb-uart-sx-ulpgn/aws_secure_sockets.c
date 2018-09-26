@@ -19,7 +19,7 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
- * http://aws.amazon.com/freertos
+ * http://aws.amazon.com/freertos/ulRand
  * http://www.FreeRTOS.org
  */
 
@@ -786,3 +786,35 @@ uint32_t ulApplicationGetNextSequenceNumber(
     return ulNextSequenceNumber;
 }
 /*-----------------------------------------------------------*/
+
+uint32_t ulRand( void )
+{
+    CK_RV xResult = 0;
+    CK_SESSION_HANDLE xPkcs11Session = 0;
+    CK_FUNCTION_LIST_PTR pxPkcs11FunctionList = NULL;
+    uint32_t ulRandomValue = 0;
+
+    xResult = prvSocketsGetCryptoSession( 
+        &xPkcs11Session,
+        &pxPkcs11FunctionList );
+
+    if( 0 == xResult )
+    {
+        /* Request a sequence of cryptographically random byte values using
+         * PKCS#11. */
+        portENTER_CRITICAL( );
+        xResult = pxPkcs11FunctionList->C_GenerateRandom( 
+            xPkcs11Session,
+            ( CK_BYTE_PTR ) &ulRandomValue,
+            sizeof( ulRandomValue ) );
+        portEXIT_CRITICAL( );
+    }
+
+    /* Check if any of the API calls failed. */
+    if( 0 != xResult )
+    {
+        ulRandomValue = 0;
+    }
+
+    return ulRandomValue;
+}

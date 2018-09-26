@@ -59,7 +59,7 @@ const char pcOTA_JSON_FileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ] = "sig
  * kOTA_Err_BadSignerCert if the if the signature verification certificate cannot be read.
  * 
  */
-static OTA_Err_t prvPAL_CheckFileSignature( OTA_FileContext_t * const C );
+OTA_Err_t prvPAL_CheckFileSignature( OTA_FileContext_t * const C );
 
 /**
  * @brief Read the specified signer certificate from the filesystem into a local buffer.
@@ -75,7 +75,7 @@ static OTA_Err_t prvPAL_CheckFileSignature( OTA_FileContext_t * const C );
  * @return A pointer to the signer certificate in the file system. NULL if the certificate cannot be read.
  * This returned pointer is the responsibility of the caller; if the memory is allocated the caller must free it.
  */
-static uint8_t * prvPAL_ReadAndAssumeCertificate( const uint8_t * const pucCertName,
+uint8_t * prvPAL_ReadAndAssumeCertificate( const uint8_t * const pucCertName,
                                                   uint32_t * const ulSignerCertSize );
 
 /*-----------------------------------------------------------*/
@@ -121,7 +121,7 @@ OTA_Err_t prvPAL_CloseFile( OTA_FileContext_t * const C )
 /*-----------------------------------------------------------*/
 
 
-static OTA_Err_t prvPAL_CheckFileSignature( OTA_FileContext_t * const C )
+OTA_Err_t prvPAL_CheckFileSignature( OTA_FileContext_t * const C )
 {
     DEFINE_OTA_METHOD_NAME( "prvPAL_CheckFileSignature" );
 
@@ -130,7 +130,7 @@ static OTA_Err_t prvPAL_CheckFileSignature( OTA_FileContext_t * const C )
 }
 /*-----------------------------------------------------------*/
 
-static uint8_t * prvPAL_ReadAndAssumeCertificate( const uint8_t * const pucCertName,
+uint8_t * prvPAL_ReadAndAssumeCertificate( const uint8_t * const pucCertName,
                                                   uint32_t * const ulSignerCertSize )
 {
     DEFINE_OTA_METHOD_NAME( "prvPAL_ReadAndAssumeCertificate" );
