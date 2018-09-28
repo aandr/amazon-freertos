@@ -227,7 +227,7 @@ Configuration Options
    3 = Sub-Clock Oscillator
    4 = PLL Circuit
 */ 
-#define BSP_CFG_CLOCK_SOURCE            (4) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_CLOCK_SOURCE            (1) // <-- Updated by GUI. Do not edit this value manually
 
 /* Main clock Oscillator Switching (MOSEL).
    0 = Resonator

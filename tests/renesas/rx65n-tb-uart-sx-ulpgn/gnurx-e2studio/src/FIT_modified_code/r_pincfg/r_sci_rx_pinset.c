@@ -77,3 +77,23 @@ void R_SCI_PinSet_SCI10()
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }
 
+/***********************************************************************************************************************
+* Function Name: R_SCI_PinSet_SCI8
+* Description  : This function initializes pins for r_sci_rx module
+* Arguments    : none
+* Return Value : none
+***********************************************************************************************************************/
+void R_SCI_PinSet_SCI8()
+{
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
+
+    /* Set RXD8/SMISO8/SSCL8 pin */
+    MPC.PJ1PFS.BYTE = 0x0AU;
+    PORTJ.PMR.BIT.B1 = 1U;
+
+    /* Set TXD8/SMOSI8/SSDA8 pin */
+    MPC.PJ2PFS.BYTE = 0x0AU;
+    PORTJ.PMR.BIT.B2 = 1U;
+
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
+}

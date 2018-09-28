@@ -137,28 +137,10 @@ static void prvMiscInitialization( void );
  */
 int main( void )
 {
-    /* Perform any hardware initialization that does not require the RTOS to be
-     * running.  */
-    prvMiscInitialization();
-
-    /* Create tasks that are not dependent on the Wi-Fi being initialized. */
-    xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
-                            tskIDLE_PRIORITY,
-                            mainLOGGING_MESSAGE_QUEUE_LENGTH );
-
-    /* FIX ME: If you are using Ethernet network connections and the FreeRTOS+TCP stack,
-     * uncomment the initialization function, FreeRTOS_IPInit(), below. */
-    /*FreeRTOS_IPInit( ucIPAddress,
-     *                 ucNetMask,
-     *                 ucGatewayAddress,
-     *                 ucDNSServerAddress,
-     *                 ucMACAddress );
-     */
-
-    /* Start the scheduler.  Initialization that requires the OS to be running,
-     * including the Wi-Fi initialization, is performed in the RTOS daemon task
-     * startup hook. */
-    vTaskStartScheduler();
+    while(1)
+    {
+    	vTaskDelay(10000);
+    }
 
     return 0;
 }
@@ -169,6 +151,9 @@ static void prvMiscInitialization( void )
     /* FIX ME: Perform any hardware initializations, that don't require the RTOS to be 
      * running, here.
      */
+	uart_config();
+	configPRINT_STRING(("Hello World.\r\n"));
+
 }
 /*-----------------------------------------------------------*/
 
@@ -176,6 +161,7 @@ void vApplicationDaemonTaskStartupHook( void )
 {
     /* FIX ME: Perform any hardware initialization, that require the RTOS to be
      * running, here. */
+	prvMiscInitialization();
     
 
     /* FIX ME: If your MCU is using Wi-Fi, delete surrounding compiler directives to 

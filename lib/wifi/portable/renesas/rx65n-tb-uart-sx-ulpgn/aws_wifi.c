@@ -31,6 +31,7 @@
 #include <string.h>
 /* FreeRTOS includes. */
 #include "FreeRTOS.h"
+#include "semphr.h"
 
 /* Socket and WiFi interface includes. */
 #include "aws_wifi.h"
@@ -47,6 +48,7 @@
  * @brief Wi-Fi initialization status.
  */
 static BaseType_t xWIFIInitDone;
+static BaseType_t xWIFIConnected;
 static uint32_t prvConvertSecurityFromSilexAT( WIFISecurity_t xSecurity );
 
 static uint32_t prvConvertSecurityFromSilexAT( WIFISecurity_t xSecurity )
@@ -81,11 +83,22 @@ static uint32_t prvConvertSecurityFromSilexAT( WIFISecurity_t xSecurity )
 
 /*-----------------------------------------------------------*/
 
+static StaticSemaphore_t xControlSemaphoreBuffer;
+static SemaphoreHandle_t xControlSemaphore;
+static bool xControlSemaphoreInit;
+
 WIFIReturnCode_t WIFI_On( void )
 {
-    /* FIX ME. */
+	if (!xControlSemaphoreInit) {
+		xControlSemaphore = xSemaphoreCreateMutexStatic(&xControlSemaphoreBuffer);
+		xControlSemaphoreInit = true;
+		xSemaphoreGive(xControlSemaphore);
+	}
+	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
     WIFIReturnCode_t xRetVal = eWiFiFailure;
 
+    //uart_string_printf("WiFiOn()\r\n");
 
     /* One time Wi-Fi initialization */
     if( xWIFIInitDone == pdFALSE )
@@ -113,14 +126,19 @@ WIFIReturnCode_t WIFI_On( void )
     	xRetVal = eWiFiSuccess;
     }
 
+    xSemaphoreGive(xControlSemaphore);
+
 	return xRetVal;
 }
 /*-----------------------------------------------------------*/
 
 WIFIReturnCode_t WIFI_Off( void )
 {
-    /* FIX ME. */
-    R_SCI_Close(SCI_CH7);
+    xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+	sx_ulpgn_wifi_disconnect();
+
+    xSemaphoreGive(xControlSemaphore);
 
 	return eWiFiSuccess;
 }
@@ -133,43 +151,86 @@ WIFIReturnCode_t WIFI_Off( void )
 
 WIFIReturnCode_t WIFI_ConnectAP( const WIFINetworkParams_t * const pxNetworkParams )
 {
+    xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+	//uart_string_printf("WIFI_ConnectAP\r\n");
 	int32_t ret;
 	uint32_t convert_security;
+
+	if (WIFI_IsConnected()) {
+	    xSemaphoreGive(xControlSemaphore);
+		return eWiFiSuccess;
+	}
+
+
 	convert_security = prvConvertSecurityFromSilexAT(pxNetworkParams->xSecurity);
 	ret = sx_ulpgn_wifi_connect(
 			pxNetworkParams->pcSSID,
 			convert_security,
 			pxNetworkParams->pcPassword);
+
+	xSemaphoreGive(xControlSemaphore);
+
 	if(ret != 0)
 	{
 		return eWiFiFailure;
 	}
 
-
+	xWIFIConnected = 1;
 	return eWiFiSuccess;
+}
+
+BaseType_t WIFI_IsConnected( void ) {
+	//uart_string_printf("WIFI_IsConnected");
+	return xWIFIConnected;
 }
 
 /*-----------------------------------------------------------*/
 
 WIFIReturnCode_t WIFI_Disconnect( void )
 {
-    /* FIX ME. */
-    return eWiFiFailure;
+	uint8_t ret;
+
+    xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+	//uart_string_printf("WIFI_Disconnect\r\n");
+	xWIFIConnected = 0;
+	// There appear to be modem bugs with repeat connection and disconnection, so we'll do a full restart instead
+	ret = 0 == sx_ulpgn_wifi_disconnect() && 0 == sx_ulpgn_init();
+    xSemaphoreGive(xControlSemaphore);
+
+	if (ret == 1) {
+		return eWiFiSuccess;
+	} else {
+		return eWiFiFailure;
+	}
 }
 /*-----------------------------------------------------------*/
 
 WIFIReturnCode_t WIFI_Reset( void )
 {
-    /* FIX ME. */
-    return eWiFiFailure;
+    return WIFI_Disconnect();
 }
 /*-----------------------------------------------------------*/
 
 WIFIReturnCode_t WIFI_Scan( WIFIScanResult_t * pxBuffer,
                             uint8_t ucNumNetworks )
 {
-    /* FIX ME. */
-    return eWiFiFailure;
+	int32_t ret;
+
+	if (pxBuffer == NULL || ucNumNetworks < 1) {
+		return eWiFiFailure;
+	}
+
+	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+    ret = sx_ulpgn_wifi_scan(pxBuffer, ucNumNetworks);
+    xSemaphoreGive(xControlSemaphore);
+    if (ret == 0) {
+    	return eWiFiSuccess;
+    } else {
+    	return eWiFiFailure;
+    }
 }
 /*-----------------------------------------------------------*/
 
@@ -221,24 +282,64 @@ WIFIReturnCode_t WIFI_Ping( uint8_t * pucIPAddr,
 
 WIFIReturnCode_t WIFI_GetIP( uint8_t * pucIPAddr )
 {
-    /* FIX ME. */
-    return eWiFiNotSupported;
+	int32_t ret;
+	if (pucIPAddr == NULL) {
+		return eWiFiFailure;
+	}
+
+	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+    ret = sx_ulpgn_get_ip(pucIPAddr);
+	xSemaphoreGive(xControlSemaphore);
+
+    if (ret == 0) {
+    	return eWiFiSuccess;
+    } else {
+    	return eWiFiFailure;
+    }
 }
 /*-----------------------------------------------------------*/
 
 WIFIReturnCode_t WIFI_GetMAC( uint8_t * pucMac )
 {
-    /* FIX ME. */
-//	sx_ulpgn_wifi_get_macaddr();
-    return eWiFiNotSupported;
+	uint32_t ret;
+
+	if (pucMac == NULL)
+		return eWiFiFailure;
+
+	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+	ret = sx_ulpgn_wifi_get_macaddr(pucMac);
+
+	xSemaphoreGive(xControlSemaphore);
+
+	if (ret == 0) {
+		return eWiFiSuccess;
+	} else {
+		return eWiFiFailure;
+	}
 }
 /*-----------------------------------------------------------*/
 
 WIFIReturnCode_t WIFI_GetHostIP( char * pcHost,
                                  uint8_t * pucIPAddr )
 {
-    /* FIX ME. */
-    return eWiFiNotSupported;
+	int32_t ret;
+
+	if (pucIPAddr == NULL) {
+		return eWiFiFailure;
+	}
+	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+	ret = sx_ulpgn_dns_query(pcHost, pucIPAddr);
+
+	xSemaphoreGive(xControlSemaphore);
+
+	if (ret == 0) {
+		return eWiFiSuccess;
+	} else {
+		return eWiFiFailure;
+	}
 }
 /*-----------------------------------------------------------*/
 
@@ -248,11 +349,6 @@ WIFIReturnCode_t WIFI_StartAP( void )
     return eWiFiNotSupported;
 }
 /*-----------------------------------------------------------*/
-
-
-BaseType_t WIFI_IsConnected(void) {
-	return true;
-}
 
 WIFIReturnCode_t WIFI_StopAP( void )
 {
