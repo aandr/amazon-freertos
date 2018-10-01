@@ -260,7 +260,7 @@ int __low_level_init ( void )
     Processing_Before_Start_Kernel();
 
     /* Call the kernel startup (should not return) */
-    vTaskStartScheduler();
+    main();
 #elif BSP_CFG_RTOS_USED == 2    // SEGGER embOS
 #elif BSP_CFG_RTOS_USED == 3    // Micrium MicroC/OS
 #elif BSP_CFG_RTOS_USED == 4    // Renesas RI600V4 & RI600PX
@@ -503,7 +503,7 @@ static void operating_frequency_set (void)
     SYSTEM.LOCOCR.BYTE = 0x01;
     
     /* Wait for five the LOCO cycles */
-    /* 5 count of LOCO : (1000000/216000)*5Å‡23.148148148us
+    /* 5 count of LOCO : (1000000/216000)*5ÔøΩÔøΩ23.148148148us
        23 + 2 = 25us ("+2" is overhead cycle) */
     R_BSP_SoftwareDelay((uint32_t)25, BSP_DELAY_MICROSECS);
 #endif

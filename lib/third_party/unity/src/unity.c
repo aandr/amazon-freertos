@@ -60,6 +60,9 @@ static const char UnityStrDetail2Name[]            = " " UNITY_DETAIL2_NAME " ";
 
 void UnityPrint(const char* string)
 {
+	//uart_string_printf(string);
+	//return;
+#if 1
     const char* pch = string;
 
     if (pch != NULL)
@@ -93,6 +96,7 @@ void UnityPrint(const char* string)
             pch++;
         }
     }
+#endif
 }
 
 void UnityPrintLen(const char* string, const UNITY_UINT32 length)

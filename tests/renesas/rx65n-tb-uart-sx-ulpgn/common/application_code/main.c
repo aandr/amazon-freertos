@@ -136,7 +136,17 @@ static void prvMiscInitialization( void );
  * @brief Application runtime entry point.
  */
 int main( void )
-{
+  {
+	prvMiscInitialization();
+
+    xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
+                            tskIDLE_PRIORITY,
+                            mainLOGGING_MESSAGE_QUEUE_LENGTH );
+	vLoggingPrintf("vLogging test.\r\n");
+
+	// Will not return
+	vTaskStartScheduler();
+
     while(1)
     {
     	vTaskDelay(10000);
@@ -152,7 +162,9 @@ static void prvMiscInitialization( void )
      * running, here.
      */
 	uart_config();
-	configPRINT_STRING(("Hello World.\r\n"));
+
+	configPRINT_STRING(("Print test.\r\n"));
+
 
 }
 /*-----------------------------------------------------------*/
@@ -161,8 +173,9 @@ void vApplicationDaemonTaskStartupHook( void )
 {
     /* FIX ME: Perform any hardware initialization, that require the RTOS to be
      * running, here. */
-	prvMiscInitialization();
+
     
+
 
     /* FIX ME: If your MCU is using Wi-Fi, delete surrounding compiler directives to 
      * enable the unit tests and after MQTT, Bufferpool, and Secure Sockets libraries 

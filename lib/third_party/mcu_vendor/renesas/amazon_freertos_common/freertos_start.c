@@ -391,6 +391,7 @@ void Processing_Before_Start_Kernel(void)
 
     /************** task creation ****************************/
     /* Main task. */
+#if 0 // main should not be a task
     ret = xTaskCreate(main, "MAIN_TASK", 512, NULL, 3, NULL);
     if (pdPASS != ret)
     {
@@ -399,6 +400,7 @@ void Processing_Before_Start_Kernel(void)
             /* Failed! Task can not be created. */
         }
     }
+#endif
 } /* End of function Processing_Before_Start_Kernel() */
 
 

@@ -208,11 +208,14 @@ void vLoggingPrintf( const char *pcFormat, ... )
         if( xLength > 0 )
         {
             /* Send the string to the logging task for IO. */
+        	// uart_string_printf(pcPrintString);
+
             if( xQueueSend( xQueue, &pcPrintString, loggingDONT_BLOCK ) != pdPASS )
             {
                 /* The buffer was not sent so must be freed again. */
                 vPortFree( ( void * ) pcPrintString );
             }
+
         }
         else
         {

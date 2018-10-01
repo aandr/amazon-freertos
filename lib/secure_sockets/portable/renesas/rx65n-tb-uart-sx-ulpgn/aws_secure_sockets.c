@@ -192,7 +192,7 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
     TLSParams_t xTLSParams = { 0 };
     struct freertos_sockaddr xTempAddress = { 0 };
 
-    if( ( pxContext != SOCKETS_INVALID_SOCKET ) && ( pxAddress != NULL ) )
+    if( ( pxContext != SOCKETS_INVALID_SOCKET ) && ( pxAddress != NULL ) && ((uint8_t)(pxAddress->ulAddress) != 0 ))
     {
         /* A connection was attempted. If this function fails, then the socket is invalid and the user
          * must call SOCKETS_Close(), on this socket, and SOCKETS_Socket() to get a new socket. */
@@ -487,6 +487,7 @@ int32_t SOCKETS_SetSockOpt( Socket_t xSocket,
                                                pvOptionValue,
                                                xOptionLength );
                 */
+            	lStatus = SOCKETS_EINVAL;
                 break;
         }
     }
