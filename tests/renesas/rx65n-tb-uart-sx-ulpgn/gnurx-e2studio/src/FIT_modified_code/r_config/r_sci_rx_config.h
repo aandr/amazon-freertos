@@ -89,7 +89,7 @@ Configuration Options
 #define SCI_CFG_CH7_INCLUDED    (0)
 #define SCI_CFG_CH8_INCLUDED    (1)
 #define SCI_CFG_CH9_INCLUDED    (0)
-#define SCI_CFG_CH10_INCLUDED   (1)
+#define SCI_CFG_CH10_INCLUDED   (0)
 #define SCI_CFG_CH11_INCLUDED   (0)
 #define SCI_CFG_CH12_INCLUDED   (0)
 
@@ -102,9 +102,9 @@ Configuration Options
 #define SCI_CFG_CH5_TX_BUFSIZ   (1000)
 #define SCI_CFG_CH6_TX_BUFSIZ   (80)
 #define SCI_CFG_CH7_TX_BUFSIZ   (80)
-#define SCI_CFG_CH8_TX_BUFSIZ   (80)
+#define SCI_CFG_CH8_TX_BUFSIZ   (1500)
 #define SCI_CFG_CH9_TX_BUFSIZ   (80)
-#define SCI_CFG_CH10_TX_BUFSIZ  (1460)
+#define SCI_CFG_CH10_TX_BUFSIZ  (80)
 #define SCI_CFG_CH11_TX_BUFSIZ  (80)
 #define SCI_CFG_CH12_TX_BUFSIZ  (80)
 
@@ -117,9 +117,9 @@ Configuration Options
 #define SCI_CFG_CH5_RX_BUFSIZ   (1000)
 #define SCI_CFG_CH6_RX_BUFSIZ   (80)
 #define SCI_CFG_CH7_RX_BUFSIZ   (80)
-#define SCI_CFG_CH8_RX_BUFSIZ   (80)
+#define SCI_CFG_CH8_RX_BUFSIZ   (1500)
 #define SCI_CFG_CH9_RX_BUFSIZ   (80)
-#define SCI_CFG_CH10_RX_BUFSIZ  (2048)
+#define SCI_CFG_CH10_RX_BUFSIZ  (80)
 #define SCI_CFG_CH11_RX_BUFSIZ  (80)
 #define SCI_CFG_CH12_RX_BUFSIZ  (80)
 

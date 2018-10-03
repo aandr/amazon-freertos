@@ -208,10 +208,10 @@ extern void vLoggingPrintf( const char * pcFormat, ... );
  * tasks:
  * http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/TCP_Echo_Clients.html,
  * http://www.freertos.org/FreeRTOS-Plus/FreeRTOS_Plus_TCP/UDP_Echo_Clients.html. */
-#define configECHO_SERVER_ADDR0              192
-#define configECHO_SERVER_ADDR1              168
-#define configECHO_SERVER_ADDR2              1
-#define configECHO_SERVER_ADDR3              200
+#define configECHO_SERVER_ADDR0              142
+#define configECHO_SERVER_ADDR1              93
+#define configECHO_SERVER_ADDR2              93
+#define configECHO_SERVER_ADDR3              21
 #define configTCP_ECHO_CLIENT_PORT           9999
 
 /* Default MAC address configuration.  The demo creates a virtual network

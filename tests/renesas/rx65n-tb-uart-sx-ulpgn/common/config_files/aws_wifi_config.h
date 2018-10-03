@@ -39,7 +39,7 @@
 /**
  * @brief Maximum number of connection retries.
  */
-#define wificonfigNUM_CONNECTION_RETRY        ( 3 )
+#define wificonfigNUM_CONNECTION_RETRY        ( 4 )
 
 /**
  * @brief Maximum number of connected station in Access Point mode.

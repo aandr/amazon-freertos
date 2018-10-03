@@ -89,7 +89,7 @@ Configuration Options
    FP           = 0x5             = LFQFP/100/0.50
    LJ           = 0xA             = TFLGA/100/0.65
 */
-#define BSP_CFG_MCU_PART_PACKAGE        (0x0) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_MCU_PART_PACKAGE        (0x5) // <-- Updated by GUI. Do not edit this value manually
 
 /* Whether Encryption and SDHI/SDSI are included or not. 
    Character(s) = Value for macro = Description
@@ -227,7 +227,7 @@ Configuration Options
    3 = Sub-Clock Oscillator
    4 = PLL Circuit
 */ 
-#define BSP_CFG_CLOCK_SOURCE            (4) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_CLOCK_SOURCE            (1) // <-- Updated by GUI. Do not edit this value manually
 
 /* Main clock Oscillator Switching (MOSEL).
    0 = Resonator
@@ -276,7 +276,7 @@ Configuration Options
 */
 
 /* Input clock frequency in Hz (XTAL or EXTAL). */
-#define BSP_CFG_XTAL_HZ                 (24000000) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_XTAL_HZ                 (12000000) // <-- Updated by GUI. Do not edit this value manually
 
 /* The HOCO can operate at several different frequencies. Choose which one using the macro below.
    Available frequency settings:
@@ -284,14 +284,14 @@ Configuration Options
    1 = 18MHz
    2 = 20MHz
 */
-#define BSP_CFG_HOCO_FREQUENCY          (0) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_HOCO_FREQUENCY          (2) // <-- Updated by GUI. Do not edit this value manually
 
-/* PLL clock source (PLLSRCEL). Choose which clock source to input to the PLL circuit.
+/* PLL clock source (PLLSRCSEL). Choose which clock source to input to the PLL circuit.
    Available clock sources:
    0 = Main clock (default)
    1 = HOCO
 */
-#define BSP_CFG_PLL_SRC                 (0) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_PLL_SRC                 (1) // <-- Updated by GUI. Do not edit this value manually
 
 /* PLL Input Frequency Division Ratio Select (PLIDIV).
    Available divisors = /1 (no division), /2, /3
@@ -301,7 +301,7 @@ Configuration Options
 /* PLL Frequency Multiplication Factor Select (STC). 
    Available multipliers = x10.0 to x30.0 in 0.5 increments (e.g. 10.0, 10.5, 11.0, 11.5, ..., 29.0, 29.5, 30.0)
 */
-#define BSP_CFG_PLL_MUL                 (10.0) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_PLL_MUL                 (12.0) // <-- Updated by GUI. Do not edit this value manually
 
 /* System Clock Divider (ICK).
    Available divisors = /1 (no division), /2, /4, /8, /16, /32, /64
@@ -628,8 +628,10 @@ Configuration Options
    1 = rev. 1.00 Board (RTK50565N2C00000BE)
    2 = RX65N Envision Kit
    3 = RX65N GR-ROSE
+  (4 = RX64M GR-KAEDE // FIXME: find a better way)
+   5 = RX65N TB
 */
-#define BSP_CFG_BOARD_REVISION                      (1)
+#define BSP_CFG_BOARD_REVISION                      (5)
 
 #endif /* R_BSP_CONFIG_REF_HEADER_FILE */
 

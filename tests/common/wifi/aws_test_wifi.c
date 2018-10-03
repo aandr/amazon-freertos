@@ -93,7 +93,7 @@
 /* 14 total channels in the 2.4 GHz band. Set to the number of channels available in your region. This can
  * be configured in aws_test_wifi_config.h. */
 #ifndef testwifiMAX_CHANNEL_NUMBER
-    #define testwifiMAX_CHANNEL_NUMBER    14
+    #define testwifiMAX_CHANNEL_NUMBER    13
 #endif
 
 /* 6 total bytes in a MAC address. */
@@ -322,10 +322,12 @@ static BaseType_t prvRoundTripTest()
         xEchoServerSockaddr.ucLength = sizeof( SocketsSockaddr_t );
         xEchoServerSockaddr.ucSocketDomain = SOCKETS_AF_INET;
 
-        if( SOCKETS_Connect( xSocket,
+        xResult = SOCKETS_Connect( xSocket,
                              &xEchoServerSockaddr,
-                             sizeof( xEchoServerSockaddr ) ) != SOCKETS_ERROR_NONE )
+                             sizeof( xEchoServerSockaddr ) );
+        if (xResult != SOCKETS_ERROR_NONE)
         {
+            configPRINTF(("%d", xResult));
             xResult = pdFAIL;
             configPRINTF( ( "Error connecting on the socket.\r\n" ) );
         }

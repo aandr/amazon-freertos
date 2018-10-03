@@ -297,7 +297,7 @@ int32_t sx_ulpgn_socket_create(uint32_t type,uint32_t ipversion)
 		return ret;
 	}
 	socket_create_flag = 1;
-//	ret = sx_ulpgn_serial_send_basic("ATNSTAT=\r", 3, 200, ULPGN_RETURN_OK);
+	//ret = sx_ulpgn_serial_send_basic("ATNSTAT=\r", 3, 200, ULPGN_RETURN_OK);
 
 	return 0;
 }
@@ -306,6 +306,7 @@ int32_t sx_ulpgn_socket_create(uint32_t type,uint32_t ipversion)
 int32_t sx_ulpgn_tcp_connect(uint32_t ipaddr, uint16_t port)
 {
 	int32_t result;
+	int32_t i = 0;
 
 	xSemaphoreTake(semaphore_handle, portMAX_DELAY);
 
@@ -315,6 +316,10 @@ int32_t sx_ulpgn_tcp_connect(uint32_t ipaddr, uint16_t port)
 	result = sx_ulpgn_serial_send_basic(buff, 3, 10000, ULPGN_RETURN_CONNECT);
 	if (result == 0) {
 		transparent_mode = true;
+		xSemaphoreGive(semaphore_handle);
+		return result;
+	} else {
+		uart_string_printf(recvbuff);
 	}
 
 	xSemaphoreGive(semaphore_handle);
@@ -801,6 +806,7 @@ static void sx_ulpgn_uart_callback(void *pArgs)
         /* From receiver overflow error interrupt; error data is in p_args->byte
            Error condition is cleared in calling interrupt routine */
      	overflows++;
+		uart_string_printf("overlow\r\n");
     }
     else if (SCI_EVT_FRAMING_ERR == p_args->event)
     {

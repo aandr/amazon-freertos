@@ -106,7 +106,7 @@ static BaseType_t prvNetworkRecv( void * pvContext,
 {
 	SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) pvContext; /*lint !e9087 cast used for portability. */
 
-    return sx_ulpgn_tcp_recv(pucReceiveBuffer, xReceiveLength, 1500);
+    return sx_ulpgn_tcp_recv(pucReceiveBuffer, xReceiveLength, 3000);
 }
 /*-----------------------------------------------------------*/
 
