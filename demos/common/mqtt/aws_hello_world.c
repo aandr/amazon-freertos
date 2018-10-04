@@ -440,7 +440,7 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
     const BaseType_t xIterationsInAMinute = 60 / 5;
     TaskHandle_t xEchoingTask = NULL;
 
-    vTaskDelay(10000);	// todo: this is renesas issue.
+    vTaskDelay(1000);	// todo: this is renesas issue.
 
     /* Avoid compiler warnings about unused parameters. */
     ( void ) pvParameters;

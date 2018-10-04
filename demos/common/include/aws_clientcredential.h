@@ -1,5 +1,5 @@
 /*
- * Amazon FreeRTOS V1.4.1
+ * Amazon FreeRTOS V1.2.7
  * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -35,12 +35,12 @@
 /*
  * MQTT Broker endpoint.
  */
-static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "Paste AWS IoT Broker endpoint here.";
+static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "a1odh71idddfl6.iot.us-east-1.amazonaws.com";
 
 
 /* Use of a "define" and not a "static const" here to be able to
 * use pre-compile concatenation on the string. */
-#define clientcredentialIOT_THING_NAME "Paste AWS IoT Thing name here."
+#define clientcredentialIOT_THING_NAME "arn:aws:iot:us-east-1:075028361121:thing/RSKRX65N"
 
 /*
  * Port number the MQTT broker is using.
@@ -55,12 +55,13 @@ static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "Paste AWS IoT Broker
 /*
  * Wi-Fi network to join.
  */
-#define clientcredentialWIFI_SSID       "RenesasOTA"
-
+#define clientcredentialWIFI_SSID       "visitor"
+// #define clientcredentialWIFI_SSID       "RenesasOTA"
 /*
  * Password needed to join Wi-Fi network.
  */
-#define clientcredentialWIFI_PASSWORD   "Rx65nS7g22"
+#define clientcredentialWIFI_PASSWORD   "isilwifi"
+// #define clientcredentialWIFI_PASSWORD   "Rx65nS7g22"
 
 /**
  * @brief Security type

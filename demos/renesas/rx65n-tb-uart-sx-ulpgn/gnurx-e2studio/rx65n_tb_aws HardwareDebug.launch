@@ -22,7 +22,7 @@
 <stringAttribute key="com.renesas.cdt.core.secondGDBExe" value="green_dsp-elf-gdb"/>
 <booleanAttribute key="com.renesas.cdt.core.secondGDBSupport" value="false"/>
 <intAttribute key="com.renesas.cdt.core.secondGdbPortNumber" value="61237"/>
-<stringAttribute key="com.renesas.cdt.core.serverParam" value="-g E2LITE  -t R5F565NE  -uClockSrcHoco= 0 -uInputClock= 27.0 -uAllowClockSourceInternal= 1 -uUseFine= 1 -uFineBaudRate= 1.50 -w 1 -z 0 -uRegisterSetting= 0 -uModePin= 0 -uChangeStartupBank= 0 -uStartupBank= 0 -uDebugMode= 0 -uExecuteProgram= 0 -uIdCode= FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF -uresetOnReload= 1 -n 0 -uWorkRamAddress= 1000 -uProgReWriteIRom= 0 -uProgReWriteDFlash= 0 -uhookWorkRamAddr= 0x3fdd0 -uhookWorkRamSize= 0x230"/>
+<stringAttribute key="com.renesas.cdt.core.serverParam" value="-g E2LITE  -t R5F565NE  -uClockSrcHoco= 0 -uInputClock= 27.0000 -uAllowClockSourceInternal= 1 -uUseFine= 1 -uFineBaudRate= 1.50 -w 0 -z 0 -uRegisterSetting= 0 -uModePin= 0 -uChangeStartupBank= 0 -uStartupBank= 0 -uDebugMode= 0 -uExecuteProgram= 0 -uIdCode= FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF -uresetOnReload= 1 -n 0 -uWorkRamAddress= 1000 -uProgReWriteIRom= 0 -uProgReWriteDFlash= 0 -uhookWorkRamAddr= 0x3fdd0 -uhookWorkRamSize= 0x230"/>
 <booleanAttribute key="com.renesas.cdt.core.setResume" value="true"/>
 <booleanAttribute key="com.renesas.cdt.core.setStopAt" value="true"/>
 <booleanAttribute key="com.renesas.cdt.core.startServer" value="true"/>
@@ -84,7 +84,7 @@
 <intAttribute key="com.renesas.hardwaredebug.rx.e2lite.clock_source" value="0"/>
 <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.connection.mode" value="0"/>
 <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.e1_pwr" value="false"/>
-<booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.e2lite_pwr" value="true"/>
+<booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.e2lite_pwr" value="false"/>
 <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.enable.hot.plug" value="false"/>
 <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.enable_external_flash" value="false"/>
 <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.execute.program" value="false"/>
@@ -100,7 +100,7 @@
 <intAttribute key="com.renesas.hardwaredebug.rx.e2lite.hook_work_ram_Addr" value="261584"/>
 <intAttribute key="com.renesas.hardwaredebug.rx.e2lite.hook_work_ram_Size" value="560"/>
 <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.id_code" value="FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"/>
-<stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.inputclock" value="27.0"/>
+<stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.inputclock" value="27.0000"/>
 <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.jtag.clock.freq" value="6.00"/>
 <stringAttribute key="com.renesas.hardwaredebug.rx.e2lite.jtag.or.fine" value="1"/>
 <booleanAttribute key="com.renesas.hardwaredebug.rx.e2lite.le" value="true"/>
@@ -116,7 +116,7 @@
 <intAttribute key="org.eclipse.cdt.debug.gdbjtag.core.delay" value="3"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doHalt" value="false"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.doReset" value="false"/>
-<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageFileName" value="C:\Users\a5088582\Desktop\AmazonFreeRTOS\latest\demos\renesas\rx65n-tb-uart-sx-ulpgn\gnurx-e2studio\HardwareDebug\aws_demos.elf"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageFileName" value="C:\Users\Alek\Documents\amazon-freertos\demos\renesas\rx65n-tb-uart-sx-ulpgn\gnurx-e2studio\HardwareDebug\aws_demos.elf"/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageOffset" value=""/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.initCommands" value=""/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.loadImage" value="true"/>
@@ -127,7 +127,7 @@
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.setResume" value="false"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.setStopAt" value="true"/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.stopAt" value="main"/>
-<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsFileName" value="C:\Users\a5088582\Desktop\AmazonFreeRTOS\latest\demos\renesas\rx65n-tb-uart-sx-ulpgn\gnurx-e2studio\HardwareDebug\aws_demos.elf"/>
+<stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsFileName" value="C:\Users\Alek\Documents\amazon-freertos\demos\renesas\rx65n-tb-uart-sx-ulpgn\gnurx-e2studio\HardwareDebug\aws_demos.elf"/>
 <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.symbolsOffset" value=""/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useFileForImage" value="false"/>
 <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.useFileForSymbols" value="false"/>
