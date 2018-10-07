@@ -39,6 +39,7 @@
 #include "task.h"
 #include "queue.h"
 #include "event_groups.h"
+#include "aws_test_runner.h"
 #include "aws_clientcredential.h"
 
 /* Unity framework includes. */

@@ -34,6 +34,10 @@
 
 #include "aws_test_runner_config.h"
 
+#if defined(__CCRX__)
+#define __FUNCTION__    __func__
+#endif
+
 /*
  * @brief If set to 1, will run AFQP tests only.
  */

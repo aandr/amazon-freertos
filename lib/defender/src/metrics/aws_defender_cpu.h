@@ -24,6 +24,7 @@
  */
 #ifndef AWS_DEFENDER_CPU_H
 #define AWS_DEFENDER_CPU_H
+#define CLOCKS_PER_SEC 1000
 
 int DEFENDER_CpuLoadGet( void );
 void DEFENDER_CpuLoadRefresh( void );

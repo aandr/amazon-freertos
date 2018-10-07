@@ -9,6 +9,7 @@
 #include "sx_ulpgn_driver.h"
 #include "aws_secure_sockets.h"
 
+// #define WIFI_DEBUG
 
 
 const uint8_t ulpgn_return_text_ok[]          = ULPGN_RETURN_TEXT_OK;
@@ -77,6 +78,7 @@ static bool transparent_mode = false;
 int32_t sx_ulpgn_init(void)
 {
 	int32_t ret;
+	int32_t dhcp_retries = 10;
 
 	/* Wifi Module hardware reset   */
 	PORTD.PDR.BIT.B0 = 1;
@@ -94,6 +96,10 @@ int32_t sx_ulpgn_init(void)
 	}
 
 	g_sx_ulpgn_return_mode = 0;
+
+#ifdef WIFI_DEBUG
+	uart_string_printf("!! WIFI RESET \r\n");
+#endif
 
 	ret = sx_ulpgn_serial_send_basic("ATZ\r\n", 500, 3500, ULPGN_RETURN_OK);
 
@@ -142,9 +148,21 @@ int32_t sx_ulpgn_init(void)
 		return ret;
 	}
 
-	xSemaphoreGive(semaphore_handle);
+	while(dhcp_retries-- > 0) {
+		// keep retrying until we get a the IP address back
+		ret = sx_ulpgn_serial_send_basic("ATNSET?\r", 300, 3000, ULPGN_RETURN_OK);
+		if (ret == 0) {
+			xSemaphoreGive(semaphore_handle);
+			return 0;
+		} else {
+			vTaskDelay(50);
+			uart_string_printf("retrying stat\r\n");
+		}
 
-	return 0;
+	}
+
+	xSemaphoreGive(semaphore_handle);
+	return -1; // NO DHCP
 }
 
 int32_t sx_ulpgn_wifi_connect(uint8_t *pssid, uint32_t security, uint8_t *ppass)
@@ -286,6 +304,11 @@ int32_t sx_ulpgn_socket_create(uint32_t type,uint32_t ipversion)
 
 	ret = sx_ulpgn_serial_send_basic("ATNSTAT=\r", 3, 200, ULPGN_RETURN_OK);
 
+	if (ret != 0) {
+		xSemaphoreGive(semaphore_handle);
+		return ret;
+	}
+
 	sprintf((char *)buff,"ATNSOCK=%d,%d\r",(uint8_t)(type),(uint8_t)(ipversion));
 
 	ret = sx_ulpgn_serial_send_basic(buff, 3, 200, ULPGN_RETURN_OK);
@@ -319,7 +342,9 @@ int32_t sx_ulpgn_tcp_connect(uint32_t ipaddr, uint16_t port)
 		xSemaphoreGive(semaphore_handle);
 		return result;
 	} else {
+#ifdef WIFI_DEBUG
 		uart_string_printf(recvbuff);
+#endif
 	}
 
 	xSemaphoreGive(semaphore_handle);
@@ -562,9 +587,14 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t *ptextstring, uint16_t respons
 	sci_err_t ercd;
 	uint32_t recvcnt = 0;
 
-	//uart_string_printf(ptextstring);
+#ifdef WIFI_DEBUG
+	uart_string_printf("> ");
+	uart_string_printf(ptextstring);
+	uart_string_printf("\n");
+#endif
 
 	timeout_init(timeout_ms);
+
 
 	timeout = 0;
 	recvcnt = 0;
@@ -635,10 +665,23 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t *ptextstring, uint16_t respons
 			if(0 == strncmp((const char *)&recvbuff[recvcnt - strlen((const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode]) ],
 					(const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode], strlen((const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode])))
 			{
+#ifdef WIFI_DEBUG
+				uart_string_printf("\r\n< ");
+				uart_string_printf(recvbuff);
+				uart_string_printf("\n\r\n");
+#endif
+
 				return 0; // we got what we needed
 			}
 		}
 	}
+
+#ifdef WIFI_DEBUG
+	uart_string_printf("\r\n< ");
+	uart_string_printf(recvbuff);
+	uart_string_printf("\n\r\n");
+#endif
+
 	if(timeout == 1)
 	{
 		return -1;
@@ -658,10 +701,13 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t *ptextstring, uint16_t respons
 	printf("r:%06d:%s",tmptime2,recvbuff);
 #endif
 	/* Response data check */
+
 	if(recvcnt < strlen((const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode]))
 	{
 		return -1;
 	}
+
+
 	if(0 != strncmp((const char *)&recvbuff[recvcnt - strlen((const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode]) ],
 			(const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode], strlen((const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode])))
 	{

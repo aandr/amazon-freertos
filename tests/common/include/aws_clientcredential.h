@@ -55,7 +55,7 @@ static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "Paste AWS IoT Broker
 /*
  * Wi-Fi network to join.
  */
-#define clientcredentialWIFI_SSID                    "visitor"
+#define clientcredentialWIFI_SSID               "visitor"
 
 /*
  * Password needed to join Wi-Fi network.

@@ -24,7 +24,9 @@
  */
 #include "aws_defender_uptime.h"
 #include <assert.h>
-#include <sys/sysinfo.h>
+#include <FreeRTOS.h>
+#include <task.h>
+//#include <sys/sysinfo.h>
 
 /**  */
 static int DEFENDER_report_uptime = 0;
@@ -36,10 +38,5 @@ int DEFENDER_UptimeSecondsGet( void )
 
 void DEFENDER_UptimeRefresh( void )
 {
-    struct sysinfo current_sys_info = { 0 };
-    int err = sysinfo( &current_sys_info );
-
-    /*  returns err if address is invalid, which should be impossible */
-    assert( 0 == err );
-    DEFENDER_report_uptime = current_sys_info.uptime;
+	DEFENDER_report_uptime = xTaskGetTickCount();
 }

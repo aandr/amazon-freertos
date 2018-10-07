@@ -703,6 +703,7 @@ TEST( Full_WiFi, AFQP_WiFiConnectionLoop )
     WIFINetworkParams_t xNetworkParams = { 0 };
     WIFIReturnCode_t xWiFiStatus;
     int16_t sConnectLoop;
+    uint32_t res;
 
     xNetworkParams.pcSSID = clientcredentialWIFI_SSID;
     xNetworkParams.ucSSIDLength = sizeof( clientcredentialWIFI_SSID );
@@ -719,6 +720,7 @@ TEST( Full_WiFi, AFQP_WiFiConnectionLoop )
             TEST_WIFI_ASSERT_REQUIRED_API( eWiFiSuccess == xWiFiStatus, xWiFiStatus );
 
             vTaskDelay( testwifiCONNECTION_DELAY );
+
 
             TEST_ASSERT( prvRoundTripTest() == pdPASS );
 

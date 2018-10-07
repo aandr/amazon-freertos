@@ -27,7 +27,7 @@
 
 #include "aws_defender_tcp_conn.h"
 
-extern List_t xBoundTCPSocketsList;
+List_t xBoundTCPSocketsList; // extern removed
 static int xDEFENDER_tcp_conn_count;
 
 int DEFENDER_TcpConnGet( void )
