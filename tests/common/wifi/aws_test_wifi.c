@@ -49,7 +49,7 @@
 /* Testing configurations defintions. */
 
 /* The number of times to loop in the WiFiConnectionLoop test. */
-#define testwifiCONNECTION_LOOP_TIMES    5
+#define testwifiCONNECTION_LOOP_TIMES    3
 
 /* The delay in ms between connection and disconnection. This can be configured in aws_test_wifi_config.h
  * for your specific platform. */
@@ -86,9 +86,9 @@
 #define testwifiINVALID_WIFI_SECURITY       eWiFiSecurityWEP        /* This must be a security type that is mismatched from the valid AP configured in aws_clientcredentials.h. */
 
 /* Second set of valid Wi-Fi credentials for testing the connection loop. */
-#define testwifiWIFI_SSID                   "Guest"
-#define testwifiWIFI_PASSWORD               "Dummy"
-#define testwifiWIFI_SECURITY               eWiFiSecurityOpen
+#define testwifiWIFI_SSID                   "visitor"
+#define testwifiWIFI_PASSWORD               "isilwifi"
+#define testwifiWIFI_SECURITY               eWiFiSecurityWPA2
 
 /* 14 total channels in the 2.4 GHz band. Set to the number of channels available in your region. This can
  * be configured in aws_test_wifi_config.h. */
@@ -121,7 +121,7 @@
 /* Wi-Fi connection multi-task test parameters. */
 
 /* The number of tasks to create for the multi-task test. */
-#define testwifiNUM_TASKS           2
+#define testwifiNUM_TASKS           1
 
 /* The mask used in the task finish event group to signal that all tasks have finished. */
 #define testwifiTASK_FINISH_MASK    ( ( 1 << testwifiNUM_TASKS ) - 1 )
@@ -322,11 +322,9 @@ static BaseType_t prvRoundTripTest()
         xEchoServerSockaddr.ucLength = sizeof( SocketsSockaddr_t );
         xEchoServerSockaddr.ucSocketDomain = SOCKETS_AF_INET;
 
-        xResult = SOCKETS_Connect( xSocket,
+        if(SOCKETS_Connect( xSocket,
                              &xEchoServerSockaddr,
-                             sizeof( xEchoServerSockaddr ) );
-        if (xResult != SOCKETS_ERROR_NONE)
-        {
+                             sizeof( xEchoServerSockaddr ) != SOCKETS_ERROR_NONE)) {
             configPRINTF(("%d", xResult));
             xResult = pdFAIL;
             configPRINTF( ( "Error connecting on the socket.\r\n" ) );
@@ -500,19 +498,22 @@ TEST_TEAR_DOWN( Full_WiFi )
 TEST_GROUP_RUNNER( Full_WiFi )
 {
     /* Happy path tests. */
-    RUN_TEST_CASE( Full_WiFi, AFQP_WiFiOnOff );
+    RUN_TEST_CASE( Full_WiFi, AFQP_WiFiGetMAC );
+
+	RUN_TEST_CASE( Full_WiFi, AFQP_WiFiConnectMultipleAP );
+
+	RUN_TEST_CASE( Full_WiFi, AFQP_WiFiGetIP );
+    RUN_TEST_CASE( Full_WiFi, AFQP_WiFiIsConnected );
+
+	RUN_TEST_CASE( Full_WiFi, AFQP_WiFiOnOff );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiMode );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiConnectionLoop );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiNetworkAddGetDelete );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiPowerManagementMode )
-    RUN_TEST_CASE( Full_WiFi, AFQP_WiFiGetIP );
-    RUN_TEST_CASE( Full_WiFi, AFQP_WiFiGetMAC );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiGetHostIP );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiScan );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiReset );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiPing );
-    RUN_TEST_CASE( Full_WiFi, AFQP_WiFiIsConnected );
-    RUN_TEST_CASE( Full_WiFi, AFQP_WiFiConnectMultipleAP );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiSeperateTasksConnectingAndDisconnectingAtOnce );
     RUN_TEST_CASE( Full_WiFi, AFQP_WiFiOnOffLoop );
 

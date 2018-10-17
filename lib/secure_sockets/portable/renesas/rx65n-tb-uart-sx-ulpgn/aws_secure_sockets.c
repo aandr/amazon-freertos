@@ -74,7 +74,7 @@ typedef struct SSOCKETContext
  *
  * 16 total sockets
  */
-#define MAX_NUM_SSOCKETS    (16)
+#define MAX_NUM_SSOCKETS    (1)
 
 /**
  * @brief Number of secure sockets allocated.
@@ -541,6 +541,10 @@ Socket_t SOCKETS_Socket( int32_t lDomain,
     configASSERT( lDomain == SOCKETS_AF_INET );
     configASSERT( lType == SOCKETS_SOCK_STREAM );
     configASSERT( lProtocol == SOCKETS_IPPROTO_TCP );
+
+    if (WIFI_IsConnected() == 0) {
+    	return SOCKETS_INVALID_SOCKET;
+    }
 
 	if(ssockets_num_allocated >= MAX_NUM_SSOCKETS)
 	{

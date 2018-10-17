@@ -9,7 +9,8 @@
 #include "sx_ulpgn_driver.h"
 #include "aws_secure_sockets.h"
 
-// #define WIFI_DEBUG
+//#define WIFI_DEBUG
+#define ULPGN_PRINT uart_string_printf
 
 
 const uint8_t ulpgn_return_text_ok[]          = ULPGN_RETURN_TEXT_OK;
@@ -98,7 +99,7 @@ int32_t sx_ulpgn_init(void)
 	g_sx_ulpgn_return_mode = 0;
 
 #ifdef WIFI_DEBUG
-	uart_string_printf("!! WIFI RESET \r\n");
+	ULPGN_PRINT("!! WIFI RESET \r\n");
 #endif
 
 	ret = sx_ulpgn_serial_send_basic("ATZ\r\n", 500, 3500, ULPGN_RETURN_OK);
@@ -156,7 +157,7 @@ int32_t sx_ulpgn_init(void)
 			return 0;
 		} else {
 			vTaskDelay(50);
-			uart_string_printf("retrying stat\r\n");
+			//ULPGN_PRINT("retrying stat\r\n");
 		}
 
 	}
@@ -170,7 +171,9 @@ int32_t sx_ulpgn_wifi_connect(uint8_t *pssid, uint32_t security, uint8_t *ppass)
 	int32_t ret;
 	char *pstr,pstr2;
 	int32_t line_len;
+	int32_t ip_attempts = 10;
 	int32_t scanf_ret;
+	uint32_t ip_addr;
 	volatile char secu[3][10];
 	uint32_t security_encrypt_type = 1;
 
@@ -204,12 +207,31 @@ int32_t sx_ulpgn_wifi_connect(uint8_t *pssid, uint32_t security, uint8_t *ppass)
 	strcat((char *)buff,(const char *)ppass);
 	strcat((char *)buff,"\r");
 
+
 	ret = sx_ulpgn_serial_send_basic(buff, 500, 5000, ULPGN_RETURN_OK);
-	if(0 == ret)
-	{
-		sx_ulpgn_serial_send_basic("ATW\r", 3, 1000, ULPGN_RETURN_OK);
-	}
 	return ret;
+
+
+
+	/*
+	if(0 != ret) {
+		return ret;
+	}
+
+	while(ip_attempts-- > 0) {
+		vTaskDelay(5000);
+
+		ret = sx_ulpgn_get_ip(&ip_addr);
+		if (ret == 0 && ip_addr != (uint32_t)0) {
+			vLoggingPrintf("Connected\r\n");
+			return 0;
+		} else {
+			ULPGN_PRINT("Waiting for IP...\r\n");
+			ULPGN_PRINT(recvbuff);
+		}
+	}
+	return -1;
+	*/
 }
 
 int32_t sx_ulpgn_wifi_get_macaddr(uint8_t *pmacaddr)
@@ -287,9 +309,12 @@ int32_t sx_ulpgn_wifi_scan(WIFIScanResult_t *results, uint8_t maxNetworks) {
 	return 0;
 }
 
+
+
 int32_t sx_ulpgn_socket_create(uint32_t type,uint32_t ipversion)
 {
 	int32_t ret;
+
 
 	xSemaphoreTake(semaphore_handle, portMAX_DELAY);
 
@@ -339,12 +364,6 @@ int32_t sx_ulpgn_tcp_connect(uint32_t ipaddr, uint16_t port)
 	result = sx_ulpgn_serial_send_basic(buff, 3, 10000, ULPGN_RETURN_CONNECT);
 	if (result == 0) {
 		transparent_mode = true;
-		xSemaphoreGive(semaphore_handle);
-		return result;
-	} else {
-#ifdef WIFI_DEBUG
-		uart_string_printf(recvbuff);
-#endif
 	}
 
 	xSemaphoreGive(semaphore_handle);
@@ -512,14 +531,18 @@ int32_t sx_ulpgn_set_wakeup_callback(void *callback, void *callback_attrib) {
 
 int32_t sx_ulpgn_get_ip(uint32_t *ulipaddr) {
 	int32_t ret;
+	char *buff = recvbuff;
 	uint8_t ipaddr[4];
 
-	ret = sx_ulpgn_serial_send_basic("ATNSET?\r", 300, 3000, ULPGN_RETURN_OK);
+	ret = sx_ulpgn_serial_send_basic("ATNSET?\r", 500, 5000, ULPGN_RETURN_OK);
 	if (ret != 0) {
 		return -1;
 	}
+	if (buff[0] == '\n' && buff[1] == '\0') {
+		buff += 2;
+	}
 
-	ret = sscanf((const char *)recvbuff, "IP:%d.%d.%d.%d ", &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
+	ret = sscanf((const char *)buff, "IP:%d.%d.%d.%d ", &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
 
 	if (ret == 4) {
 		memcpy(ulipaddr, &ipaddr[0], sizeof(ipaddr));
@@ -588,9 +611,9 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t *ptextstring, uint16_t respons
 	uint32_t recvcnt = 0;
 
 #ifdef WIFI_DEBUG
-	uart_string_printf("> ");
-	uart_string_printf(ptextstring);
-	uart_string_printf("\n");
+	ULPGN_PRINT("> ");
+	ULPGN_PRINT(ptextstring);
+	ULPGN_PRINT("\n");
 #endif
 
 	timeout_init(timeout_ms);
@@ -635,6 +658,11 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t *ptextstring, uint16_t respons
 		printf("s:%06d:%s",tmptime1,ptextstring);
 	}
 #endif
+
+	const char* expected_result = ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode];
+	const uint32_t expected_len = strlen(expected_result);
+	uint32_t expected_offset = 0;
+
 	while(1)
 	{
 		ercd = R_SCI_Receive(sx_ulpgn_uart_sci_handle, &recvbuff[recvcnt], 1);
@@ -662,13 +690,16 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t *ptextstring, uint16_t respons
 				break;
 			}
 
-			if(0 == strncmp((const char *)&recvbuff[recvcnt - strlen((const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode]) ],
-					(const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode], strlen((const char *)ulpgn_result_code[expect_code][g_sx_ulpgn_return_mode])))
+
+			expected_offset = recvcnt - expected_len;
+			if(recvcnt >= expected_len &&
+			   (expected_offset = 0 || recvbuff[expected_offset-1] == '\n') &&
+			   0 == strncmp((const char *)&recvbuff[expected_offset], expected_result, expected_len))
 			{
 #ifdef WIFI_DEBUG
-				uart_string_printf("\r\n< ");
-				uart_string_printf(recvbuff);
-				uart_string_printf("\n\r\n");
+				ULPGN_PRINT("\r\n< ");
+				ULPGN_PRINT(recvbuff);
+				ULPGN_PRINT("\n\r\n");
 #endif
 
 				return 0; // we got what we needed
@@ -677,9 +708,9 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t *ptextstring, uint16_t respons
 	}
 
 #ifdef WIFI_DEBUG
-	uart_string_printf("\r\n< ");
-	uart_string_printf(recvbuff);
-	uart_string_printf("\n\r\n");
+	ULPGN_PRINT("\r\n< ");
+	ULPGN_PRINT(recvbuff);
+	ULPGN_PRINT("\n\r\n");
 #endif
 
 	if(timeout == 1)
@@ -852,7 +883,7 @@ static void sx_ulpgn_uart_callback(void *pArgs)
         /* From receiver overflow error interrupt; error data is in p_args->byte
            Error condition is cleared in calling interrupt routine */
      	overflows++;
-		uart_string_printf("overlow\r\n");
+     	//ULPGN_PRINT("overflow\r\n");
     }
     else if (SCI_EVT_FRAMING_ERR == p_args->event)
     {

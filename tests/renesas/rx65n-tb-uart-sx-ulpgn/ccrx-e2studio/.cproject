@@ -101,6 +101,7 @@
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.debug.494805343" name="Outputs debugging information" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.debug" useByScannerDiscovery="false"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfo.1727278324" name="Changes the warning-level messages to information-level messages" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfo" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfoNum.1921813303" name="Message number" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfoNum" useByScannerDiscovery="false" value="21644" valueType="string"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.optimize.267313128" name="Optimization level" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.optimize" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.optimize.level0" valueType="enumerated"/>
 								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType.16071463" name="Compiler Input C" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType"/>
 								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType.334789223" name="Compiler Input CPP" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType"/>
 							</tool>
@@ -564,10 +565,16 @@
 					</folderInfo>
 					<folderInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.216582545.1107448588" name="/" resourcePath="application_code/common_test/ota">
 						<toolChain id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain.1675810383" name="Renesas CCRX Toolchain" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain" unusedChildren="">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.PE" id="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform" osList="win32" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.1393242904" name="DSP Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.1652820018"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.988066415" name="Common" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.1705245905"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.326874227" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1035258495"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.856688452" name="Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.1421951029"/>
+							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.326874227" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1035258495">
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType.1397553564" name="Compiler Input C" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType"/>
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType.34551507" name="Compiler Input CPP" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType"/>
+							</tool>
+							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.856688452" name="Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.1421951029">
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.assembler.inputType.290383834" name="Assembler InputType" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.assembler.inputType"/>
+							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.1611644216" name="Linker" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.1655720908"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.1365757041" name="Library Generator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.1176316527"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.273265487" name="Converter" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.407661203"/>

@@ -82,7 +82,7 @@
  *
  * It must be unique per MQTT broker.
  */
-#define echoCLIENT_ID          ( ( const uint8_t * ) "MQTTEcho" )
+#define echoCLIENT_ID          ( ( const uint8_t * ) "MQTTEcho99" )
 
 /**
  * @brief The topic that the MQTT client both subscribes and publishes to.
@@ -440,7 +440,7 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
     const BaseType_t xIterationsInAMinute = 60 / 5;
     TaskHandle_t xEchoingTask = NULL;
 
-    vTaskDelay(1000);	// todo: this is renesas issue.
+    vTaskDelay(10000);	// todo: this is renesas issue.
 
     /* Avoid compiler warnings about unused parameters. */
     ( void ) pvParameters;

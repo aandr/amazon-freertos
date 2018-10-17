@@ -1559,11 +1559,11 @@ static void prvSOCKETS_SendRecv_VaryLength( Server_t xConn )
     BaseType_t xResult;
     uint32_t ulIndex;
     uint32_t ulTxCount;
-    const uint32_t ulMaxLoopCount = 5;
+    const uint32_t ulMaxLoopCount = 3;
     uint32_t i;
     uint8_t * pucTxBuffer = ( uint8_t * ) cTxBuffer;
     uint8_t * pucRxBuffer = ( uint8_t * ) cRxBuffer;
-    size_t xMessageLengths[] = { 1, 2, 7, 8, 9, 1199, 1200, 1201 }; /* TODO: Add 0, send sizes larger than MTU. */
+    size_t xMessageLengths[] = { 1, 2, 7, 8, 9, 100, 170 }; /* TODO: Add 0, send sizes larger than MTU. */
 
     tcptestPRINTF( ( "Starting %s.\r\n", __FUNCTION__ ) );
 

@@ -150,17 +150,28 @@ WIFIReturnCode_t WIFI_Off( void )
 //eWiFiSecurityWPA2,     /**< WPA2 Security. */
 
 WIFIReturnCode_t WIFI_ConnectAP( const WIFINetworkParams_t * const pxNetworkParams )
+
 {
-    xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+
+	if (pxNetworkParams == NULL || pxNetworkParams->pcSSID == NULL || pxNetworkParams->pcPassword == NULL) {
+		return eWiFiFailure;
+	}
+
+	if (pxNetworkParams->ucPasswordLength !=0 && strlen(pxNetworkParams->pcPassword) + 1 != pxNetworkParams->ucPasswordLength) {
+		return eWiFiFailure;
+	}
+
+	if (WIFI_IsConnected()) {
+		return eWiFiSuccess;
+	}
+
+
+
+	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
 
 	//uart_string_printf("WIFI_ConnectAP\r\n");
 	int32_t ret;
 	uint32_t convert_security;
-
-	if (WIFI_IsConnected()) {
-	    xSemaphoreGive(xControlSemaphore);
-		return eWiFiSuccess;
-	}
 
 
 	convert_security = prvConvertSecurityFromSilexAT(pxNetworkParams->xSecurity);
@@ -329,6 +340,7 @@ WIFIReturnCode_t WIFI_GetHostIP( char * pcHost,
 	if (pucIPAddr == NULL) {
 		return eWiFiFailure;
 	}
+
 	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
 
 	ret = sx_ulpgn_dns_query(pcHost, pucIPAddr);

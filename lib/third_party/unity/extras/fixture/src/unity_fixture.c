@@ -76,8 +76,7 @@ void UnityTestRunner(unityfunction* setup,
 {
     if (testSelected(name) && groupSelected(group))
     {
-    	uart_string_printf(printableName);
-    	uart_string_printf("...\r\n");
+    	//vLoggingPrintf(printableName);
 
         Unity.TestFile = file;
         Unity.CurrentTestName = printableName;

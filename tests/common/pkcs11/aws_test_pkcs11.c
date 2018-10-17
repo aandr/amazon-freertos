@@ -1027,7 +1027,7 @@ TEST_GROUP_RUNNER( Full_PKCS11 )
     RUN_TEST_CASE( Full_PKCS11, AFQP_SignVerifyCryptoApiInteropRSA );
 
     /* Run sign-verify in a loop with multiple tasks. This test may take a while. */
-    RUN_TEST_CASE( Full_PKCS11, AFQP_SignVerifyRoundTrip_MultitaskLoop );
+    //RUN_TEST_CASE( Full_PKCS11, AFQP_SignVerifyRoundTrip_MultitaskLoop );
 
     /* Test key generation. */
     RUN_TEST_CASE( Full_PKCS11, AFQP_KeyGenerationEcdsaHappyPath );
