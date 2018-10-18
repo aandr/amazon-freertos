@@ -57,19 +57,15 @@
  * PRODUCTION SYSTEMS WHICH MUST STORE KEYS SECURELY.  The variables declared
  * here are externed in aws_clientcredential_keys.h for access by other
  * modules. */
-const char clientcredentialCLIENT_CERTIFICATE_PEM[] = keyCLIENT_CERTIFICATE_PEM;
-const char *clientcredentialJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM = keyJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM;
-const char clientcredentialCLIENT_PRIVATE_KEY_PEM[] = keyCLIENT_PRIVATE_KEY_PEM;
-
 /*
  * Length of device certificate included from aws_clientcredential_keys.h .
  */
-const uint32_t clientcredentialCLIENT_CERTIFICATE_LENGTH = sizeof( clientcredentialCLIENT_CERTIFICATE_PEM );
+//const uint32_t clientcredentialCLIENT_CERTIFICATE_LENGTH = sizeof( clientcredentialCLIENT_CERTIFICATE_PEM );
 
 /*
  * Length of device private key included from aws_clientcredential_keys.h .
  */
-const uint32_t clientcredentialCLIENT_PRIVATE_KEY_LENGTH = sizeof( clientcredentialCLIENT_PRIVATE_KEY_PEM );
+//const uint32_t clientcredentialCLIENT_PRIVATE_KEY_LENGTH = sizeof( clientcredentialCLIENT_PRIVATE_KEY_PEM );
 
 /* Key provisioning helper defines. */
 #define provisioningPRIVATE_KEY_TEMPLATE_COUNT         4
