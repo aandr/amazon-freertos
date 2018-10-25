@@ -122,16 +122,18 @@ int main( void )
 {
     /* Perform any hardware initialization that does not require the RTOS to be
      * running.  */
+    prvMiscInitialization();
+
+
 
     /* Start the scheduler.  Initialization that requires the OS to be running,
      * including the WiFi initialization, is performed in the RTOS daemon task
      * startup hook. */
-    prvMiscInitialization();
-	vTaskStartScheduler();
+    vTaskStartScheduler();
 
     while(1)
     {
-    	vTaskDelay(10000);
+     	vTaskDelay(10000);
     }
 
     return 0;
@@ -142,18 +144,17 @@ static void prvMiscInitialization( void )
 {
     /* FIX ME. */
 	uart_config();
-	configPRINT_STRING(("Print test\r\n"));
+	uart_string_printf("Print test.");
+	configPRINT_STRING(("Hello World.\r\n"));
     /* Start logging task. */
     xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
                             tskIDLE_PRIORITY,
                             mainLOGGING_MESSAGE_QUEUE_LENGTH );
-    vLoggingPrintf("vLoggingPrintf Test\r\n");
 }
 /*-----------------------------------------------------------*/
 
 void vApplicationDaemonTaskStartupHook( void )
 {
-
     if( SYSTEM_Init() == pdPASS )
     {
 #if(0)

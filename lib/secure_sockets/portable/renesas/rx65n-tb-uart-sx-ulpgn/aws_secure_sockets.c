@@ -58,6 +58,8 @@ typedef struct SSOCKETContext
     BaseType_t xRequireTLS;
     BaseType_t xSendFlags;
     BaseType_t xRecvFlags;
+    uint32_t ulSendTimeout;
+    uint32_t ulRecvTimeout;
     char * pcServerCertificate;
     uint32_t ulServerCertificateLength;
     char ** ppcAlpnProtocols;
@@ -93,20 +95,28 @@ static BaseType_t prvNetworkSend( void * pvContext,
 {
     SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) pvContext; /*lint !e9087 cast used for portability. */
 
-    return sx_ulpgn_tcp_send(pucData, xDataLength, 15000);
+    return sx_ulpgn_tcp_send(pucData, xDataLength, pxContext->ulSendTimeout);
 }
 /*-----------------------------------------------------------*/
 
 /*
  * @brief Network receive callback.
- */
+*/
 static BaseType_t prvNetworkRecv( void * pvContext,
-                                  unsigned char * pucReceiveBuffer,
-                                  size_t xReceiveLength )
+                                 unsigned char * pucReceiveBuffer,
+                                 size_t xReceiveLength )
 {
-	SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) pvContext; /*lint !e9087 cast used for portability. */
+	BaseType_t receive_byte;
+   SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) pvContext; /*lint !e9087 cast used for portability. */
 
-    return sx_ulpgn_tcp_recv(pucReceiveBuffer, xReceiveLength, 3000);
+
+   receive_byte = sx_ulpgn_tcp_recv(pucReceiveBuffer, xReceiveLength, pxContext->ulRecvTimeout);
+
+   if(xReceiveLength == 64)
+   {
+   	nop();
+   }
+   return receive_byte;
 }
 /*-----------------------------------------------------------*/
 
@@ -215,8 +225,8 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
             xTLSParams.pcDestination = pxContext->pcDestination;
             xTLSParams.pcServerCertificate = pxContext->pcServerCertificate;
             xTLSParams.ulServerCertificateLength = pxContext->ulServerCertificateLength;
-            xTLSParams.ppcAlpnProtocols = ( const char ** ) pxContext->ppcAlpnProtocols;
-            xTLSParams.ulAlpnProtocolsCount = pxContext->ulAlpnProtocolsCount;
+            //xTLSParams.ppcAlpnProtocols = ( const char ** ) pxContext->ppcAlpnProtocols;
+            //xTLSParams.ulAlpnProtocolsCount = pxContext->ulAlpnProtocolsCount;
             xTLSParams.pvCallerContext = pxContext;
             xTLSParams.pxNetworkRecv = prvNetworkRecv;
             xTLSParams.pxNetworkSend = prvNetworkSend;
@@ -225,6 +235,10 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
             if( SOCKETS_ERROR_NONE == lStatus )
             {
                 lStatus = TLS_Connect( pxContext->pvTLSContext );
+                if( lStatus < 0 )
+                {
+                	lStatus = SOCKETS_TLS_HANDSHAKE_ERROR;
+                }
             }
         }
     }
@@ -337,15 +351,9 @@ int32_t SOCKETS_SetSockOpt( Socket_t xSocket,
         {
             case SOCKETS_SO_SERVER_NAME_INDICATION:
 
-                /* Do not set the SNI options if the socket is possibly already connected. */
-                if( pxContext->xConnectAttempted == pdTRUE )
-                {
-                    lStatus = SOCKETS_EISCONN;
-                }
-
                 /* Non-NULL destination string indicates that SNI extension should
                  * be used during TLS negotiation. */
-                else if( NULL == ( pxContext->pcDestination =
+                if( NULL == ( pxContext->pcDestination =
                                        ( char * ) pvPortMalloc( 1U + xOptionLength ) ) )
                 {
                     lStatus = SOCKETS_ENOMEM;
@@ -360,15 +368,9 @@ int32_t SOCKETS_SetSockOpt( Socket_t xSocket,
 
             case SOCKETS_SO_TRUSTED_SERVER_CERTIFICATE:
 
-                /* Do not set the trusted server certificate if the socket is possibly already connected. */
-                if( pxContext->xConnectAttempted == pdTRUE )
-                {
-                    lStatus = SOCKETS_EISCONN;
-                }
-
                 /* Non-NULL server certificate field indicates that the default trust
                  * list should not be used. */
-                else if( NULL == ( pxContext->pcServerCertificate =
+                if( NULL == ( pxContext->pcServerCertificate =
                                        ( char * ) pvPortMalloc( xOptionLength ) ) )
                 {
                     lStatus = SOCKETS_ENOMEM;
@@ -383,15 +385,7 @@ int32_t SOCKETS_SetSockOpt( Socket_t xSocket,
 
             case SOCKETS_SO_REQUIRE_TLS:
 
-                /* Do not set the TLS option if the socket is possibly already connected. */
-                if( pxContext->xConnectAttempted == pdTRUE )
-                {
-                    lStatus = SOCKETS_EISCONN;
-                }
-                else
-                {
-                    pxContext->xRequireTLS = pdTRUE;
-                }
+                pxContext->xRequireTLS = pdTRUE;
 
                 break;
 
@@ -443,35 +437,33 @@ int32_t SOCKETS_SetSockOpt( Socket_t xSocket,
                 break;
 
             case SOCKETS_SO_NONBLOCK:
-                xTimeout = 0;
-
-                /* Non-blocking connect is not supported.  Socket may be set to nonblocking
-                 * only after a connection is made. */
-                if( pdTRUE == pxContext->xConnectAttempted )
-                {
-                	// sockets are nonblocking by default
-                }
-                else
-                {
-                    lStatus = SOCKETS_EISCONN;
-                }
+            	pxContext->ulSendTimeout = 1;
+            	pxContext->ulRecvTimeout = 2;
 
                 break;
 
             case SOCKETS_SO_RCVTIMEO:
-            case SOCKETS_SO_SNDTIMEO:
-                /* Comply with Berkeley standard - a 0 timeout is wait forever. */
-                xTimeout = *( ( const TickType_t * ) pvOptionValue ); /*lint !e9087 pvOptionValue passed should be of TickType_t */
+                  /* Comply with Berkeley standard - a 0 timeout is wait forever. */
+                  xTimeout = *( ( const TickType_t * ) pvOptionValue ); /*lint !e9087 pvOptionValue passed should be of TickType_t */
 
-                if( xTimeout == 0U )
-                {
-                    xTimeout = portMAX_DELAY;
-                }
+                  if( xTimeout == 0U )
+                  {
+                      xTimeout = portMAX_DELAY;
+                  }
+              	pxContext->ulRecvTimeout = xTimeout;
+      //            sx_ulpgn_serial_tcp_timeout_set(xTimeout);
+                  break;
+              case SOCKETS_SO_SNDTIMEO:
+                  /* Comply with Berkeley standard - a 0 timeout is wait forever. */
+                  xTimeout = *( ( const TickType_t * ) pvOptionValue ); /*lint !e9087 pvOptionValue passed should be of TickType_t */
 
-                if (0 == sx_ulpgn_serial_tcp_timeout_set(xTimeout)) {
-                	lStatus = pdFREERTOS_ERRNO_NONE;
-                }
-                break;
+                  if( xTimeout == 0U )
+                  {
+                      xTimeout = portMAX_DELAY;
+                  }
+              	pxContext->ulSendTimeout = xTimeout;
+      //            sx_ulpgn_serial_tcp_timeout_set(xTimeout);
+                  break;
 
             case SOCKETS_SO_WAKEUP_CALLBACK:
             	if (0 == sx_ulpgn_set_wakeup_callback((void *)pvOptionValue, pxContext)) {
@@ -598,6 +590,66 @@ static CK_SESSION_HANDLE xPkcs11Session = 0;
 static CK_FUNCTION_LIST_PTR pxPkcs11FunctionList = NULL;
 
 /*-----------------------------------------------------------*/
+
+static CK_RV prvSocketsGetCryptoSession( CK_SESSION_HANDLE *pxSession,
+                                         CK_FUNCTION_LIST_PTR_PTR ppxFunctionList )
+{
+    CK_RV xResult = 0;
+    CK_C_GetFunctionList pxCkGetFunctionList = NULL;
+    static CK_SESSION_HANDLE xPkcs11Session = 0;
+    static CK_FUNCTION_LIST_PTR pxPkcs11FunctionList = NULL;
+    CK_ULONG ulCount = 1;
+    CK_SLOT_ID xSlotId = 0;
+
+    portENTER_CRITICAL( );
+
+    if( 0 == xPkcs11Session )
+    {
+        /* One-time initialization. */
+
+        /* Ensure that the PKCS#11 module is initialized. */
+        if( 0 == xResult )
+        {
+            pxCkGetFunctionList = C_GetFunctionList;
+            xResult = pxCkGetFunctionList( &pxPkcs11FunctionList );
+        }
+
+        if( 0 == xResult )
+        {
+            xResult = pxPkcs11FunctionList->C_Initialize( NULL );
+        }
+
+        /* Get the default slot ID. */
+        if( 0 == xResult )
+        {
+            xResult = pxPkcs11FunctionList->C_GetSlotList(
+                CK_TRUE,
+                &xSlotId,
+                &ulCount );
+        }
+
+        /* Start a session with the PKCS#11 module. */
+        if( 0 == xResult )
+        {
+            xResult = pxPkcs11FunctionList->C_OpenSession(
+                xSlotId,
+                CKF_SERIAL_SESSION,
+                NULL,
+                NULL,
+                &xPkcs11Session );
+        }
+    }
+
+    portEXIT_CRITICAL( );
+
+    /* Output the shared function pointers and session handle. */
+    *ppxFunctionList = pxPkcs11FunctionList;
+    *pxSession = xPkcs11Session;
+
+    return xResult;
+}
+/*-----------------------------------------------------------*/
+
 
 uint32_t ulRand( void )
 {

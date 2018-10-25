@@ -148,11 +148,11 @@ void vConfigureTimerForRunTimeStats( void );
 
 #if(1)
 /* Assert call defined for debug builds. */
-//extern void vAssertCalled( void );
-#define configASSERT( x ) if( ( x ) == 0 ) vLoggingPrintf("Assert failed!")
+extern void vAssertCalled( void );
+#define configASSERT( x ) if( ( x ) == 0 ) vAssertCalled()
 
-// extern TEST_ABORT();
-// #define configASSERT( x )   if( ( x ) == 0 )  TEST_ABORT()
+//extern TEST_ABORT();
+//#define configASSERT( x )   if( ( x ) == 0 )  TEST_ABORT()
 #endif
 
 /* The function that implements FreeRTOS printf style output, and the macro

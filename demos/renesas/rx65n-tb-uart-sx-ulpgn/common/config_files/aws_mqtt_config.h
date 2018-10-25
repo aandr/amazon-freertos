@@ -55,12 +55,12 @@
 /*
  * Uncomment the following two lines to enable asserts.
  */
-extern void vAssertCalled( const char *pcFile, uint32_t ulLine );
-#define mqttconfigASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __FILE__, __LINE__ )
+/* extern void vAssertCalled( const char *pcFile, uint32_t ulLine ); */
+/* #define mqttconfigASSERT( x ) if( ( x ) == 0 ) vAssertCalled( __FILE__, __LINE__ ) */
 
 
-//extern void vAssertCalled( void );
-// #define mqttconfigASSERT( x ) if( ( x ) == 0 ) vAssertCalled()
+extern void vAssertCalled( void );
+#define mqttconfigASSERT( x ) if( ( x ) == 0 ) vAssertCalled()
 
 /**
  * @brief Set this macro to 1 for enabling debug logs.

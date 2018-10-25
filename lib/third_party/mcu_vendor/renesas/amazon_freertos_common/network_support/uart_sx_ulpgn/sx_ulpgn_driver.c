@@ -831,7 +831,7 @@ static int32_t sx_ulpgn_serial_open(void)
 {
 	sci_err_t   my_sci_err;
 
-	R_SCI_PinSet_SCI8();
+	R_SCI_PinSet_SCI10();
 
 	g_sx_ulpgn_sci_config.async.baud_rate    = 115200;
 	g_sx_ulpgn_sci_config.async.clk_src      = SCI_CLK_INT;
@@ -841,7 +841,7 @@ static int32_t sx_ulpgn_serial_open(void)
 	g_sx_ulpgn_sci_config.async.stop_bits    = SCI_STOPBITS_1;
 	g_sx_ulpgn_sci_config.async.int_priority = 3;    // 1=lowest, 15=highest
 
-    my_sci_err = R_SCI_Open(SCI_CH8, SCI_MODE_ASYNC, &g_sx_ulpgn_sci_config, sx_ulpgn_uart_callback, &sx_ulpgn_uart_sci_handle);
+    my_sci_err = R_SCI_Open(SCI_CH10, SCI_MODE_ASYNC, &g_sx_ulpgn_sci_config, sx_ulpgn_uart_callback, &sx_ulpgn_uart_sci_handle);
 
     if(SCI_SUCCESS != my_sci_err)
     {

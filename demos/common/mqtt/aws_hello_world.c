@@ -82,7 +82,7 @@
  *
  * It must be unique per MQTT broker.
  */
-#define echoCLIENT_ID          ( ( const uint8_t * ) "MQTTEcho99" )
+#define echoCLIENT_ID          ( ( const uint8_t * ) "MQTTEcho" )
 
 /**
  * @brief The topic that the MQTT client both subscribes and publishes to.
