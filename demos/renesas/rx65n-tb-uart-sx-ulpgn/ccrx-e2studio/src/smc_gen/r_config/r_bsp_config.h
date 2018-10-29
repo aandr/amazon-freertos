@@ -284,7 +284,7 @@ Configuration Options
    1 = 18MHz
    2 = 20MHz
 */
-#define BSP_CFG_HOCO_FREQUENCY          (0) // <-- Updated by GUI. Do not edit this value manually
+#define BSP_CFG_HOCO_FREQUENCY          (2) // <-- Updated by GUI. Do not edit this value manually
 
 /* PLL clock source (PLLSRCSEL). Choose which clock source to input to the PLL circuit.
    Available clock sources:

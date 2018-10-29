@@ -24,6 +24,18 @@
 #define ULPGN_RETURN_NUMERIC_BUSY        "7\r"
 #define ULPGN_RETURN_NUMERIC_NO_ANSWER   "8\r"
 
+#if BSP_CFG_BOARD_REVISION == 1
+#define SCI_TX_BUSIZ SCI_CFG_CH6_TX_BUFSIZ
+#elif BSP_CFG_BOARD_REVISION == 5
+#define SCI_TX_BUSIZ SCI_CFG_CH10_TX_BUFSIZ
+#endif
+
+#if BSP_CFG_BOARD_REVISION == 1
+#define SCI_RX_BUSIZ SCI_CFG_CH6_RX_BUFSIZ
+#elif BSP_CFG_BOARD_REVISION == 5
+#define SCI_RX_BUSIZ SCI_CFG_CH10_RX_BUFSIZ
+#endif
+
 typedef enum
 {
 	ULPGN_RETURN_OK            = 0,
@@ -63,11 +75,6 @@ int32_t sx_ulpgn_tcp_connect(uint32_t ipaddr, uint16_t port);
 int32_t sx_ulpgn_tcp_send(uint8_t *pdata, int32_t length, uint32_t timeout);
 int32_t sx_ulpgn_tcp_recv(uint8_t *pdata, int32_t length, uint32_t timeout);
 int32_t sx_ulpgn_tcp_disconnect(void);
-int32_t sx_ulpgn_set_wakup_callback(void *callback, void *callback_attrib);
 int32_t sx_ulpgn_dns_query(uint8_t *ptextstring, uint32_t *ulipaddr);
-int32_t sx_ulpgn_get_ip(uint32_t *ulipaddr);
-int32_t sx_ulpgn_wifi_disconnect();
-int32_t sx_ulpgn_serial_tcp_timeout_set(TickType_t timeout_ms);
-int32_t sx_ulpgn_set_wakeup_callback(void *callback, void *callback_attrib);
 
 #endif /* #define SX_ULPGN_DRIVER_H */

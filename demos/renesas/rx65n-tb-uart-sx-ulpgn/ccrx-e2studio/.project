@@ -27,12 +27,12 @@
 		<link>
 			<name>application_code</name>
 			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/demos/renesas/rx65n-tb-uart-sx-ulpgn/common/application_code</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/common/application_code</locationURI>
 		</link>
 		<link>
 			<name>config_files</name>
 			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/demos/renesas/rx65n-tb-uart-sx-ulpgn/common/config_files</locationURI>
+			<locationURI>PARENT-1-PROJECT_LOC/common/config_files</locationURI>
 		</link>
 		<link>
 			<name>lib</name>
@@ -51,6 +51,11 @@
 		</link>
 		<link>
 			<name>lib/third_party</name>
+			<type>2</type>
+			<locationURI>virtual:/virtual</locationURI>
+		</link>
+		<link>
+			<name>src/FIT_modified_code</name>
 			<type>2</type>
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
@@ -153,6 +158,16 @@
 			<name>lib/third_party/tinycbor</name>
 			<type>2</type>
 			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/tinycbor</locationURI>
+		</link>
+		<link>
+			<name>src/FIT_modified_code/Please exclude unnecessary r_xxx from build</name>
+			<type>1</type>
+			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/.files/Please%20exclude%20unnecessary%20r_xxx%20from%20build</locationURI>
+		</link>
+		<link>
+			<name>src/FIT_modified_code/attention!.txt</name>
+			<type>1</type>
+			<locationURI>PROJECT_LOC/src/attention!.txt</locationURI>
 		</link>
 		<link>
 			<name>src/FIT_modified_code/r_bsp</name>
@@ -305,6 +320,15 @@
 			</matcher>
 		</filter>
 		<filter>
+			<id>1537786054362</id>
+			<name>src</name>
+			<type>6</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-attention!.txt</arguments>
+			</matcher>
+		</filter>
+		<filter>
 			<id>1513514756448</id>
 			<name>lib/aws/FreeRTOS/portable</name>
 			<type>9</type>
@@ -350,6 +374,24 @@
 			</matcher>
 		</filter>
 		<filter>
+			<id>1536291011837</id>
+			<name>src/FIT_modified_code/r_bsp/board</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-true-all|rx65n|generic_rx65n</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1536291077902</id>
+			<name>src/FIT_modified_code/r_bsp/mcu</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-true-all|rx65n</arguments>
+			</matcher>
+		</filter>
+		<filter>
 			<id>1513514967899</id>
 			<name>lib/aws/FreeRTOS/portable/MemMang</name>
 			<type>5</type>
@@ -368,6 +410,42 @@
 			</matcher>
 		</filter>
 		<filter>
+			<id>1564441856894</id>
+			<name>src/FIT_modified_code/r_flash_rx/src/targets</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-rx65n</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1535360922766</id>
+			<name>src/FIT_modified_code/r_riic_rx/src/targets</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-rx65n</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1535360980389</id>
+			<name>src/FIT_modified_code/r_sci_iic_rx/src/targets</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-rx65n</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1564441820170</id>
+			<name>src/FIT_modified_code/r_sci_rx/src/targets</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-rx65n</arguments>
+			</matcher>
+		</filter>
+		<filter>
 			<id>1536904742727</id>
 			<name>lib/third_party/mcu_vendor/renesas/amazon_freertos_common/compiler_support</name>
 			<type>9</type>
@@ -383,6 +461,15 @@
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-uart_sx_ulpgn</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1537708651935</id>
+			<name>src/FIT_modified_code/r_bsp/mcu/rx65n/register_access</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-ccrx</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>
