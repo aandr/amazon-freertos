@@ -154,7 +154,7 @@ static cbor_handle_t CreateDummyReport( void )
         /* Using configRAND32 instead of ipconfigRAND32 */
         /* Including header with ipconfigRAND32 causes redefinition errors */
         /* Cryptographically secure rand is not important here */
-        uint8_t ulReportId = configRAND32();
+        uint8_t ulReportId = 4; // configRAND32();
         CBOR_AppendKeyWithInt( header, "report_id", ulReportId );
         CBOR_AppendKeyWithString( header, "version", "1.0" );
         CBOR_AppendKeyWithMap( defender_report, "header", header );

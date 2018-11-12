@@ -137,15 +137,9 @@ static void prvMiscInitialization( void );
  */
 int main( void )
   {
-	prvMiscInitialization();
-
-    xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
-                            tskIDLE_PRIORITY,
-                            mainLOGGING_MESSAGE_QUEUE_LENGTH );
-	vLoggingPrintf("vLogging test.\r\n");
 
 	// Will not return
-	vTaskStartScheduler();
+	//vTaskStartScheduler();
 
     while(1)
     {
@@ -163,7 +157,12 @@ static void prvMiscInitialization( void )
      */
 	uart_config();
 
-	configPRINT_STRING(("Print test.\r\n"));
+	uart_string_printf(("Print test.\r\n"));
+
+    xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
+                            tskIDLE_PRIORITY,
+                            mainLOGGING_MESSAGE_QUEUE_LENGTH );
+	vLoggingPrintf("vLogging test.\r\n");
 
 
 }
@@ -173,6 +172,7 @@ void vApplicationDaemonTaskStartupHook( void )
 {
     /* FIX ME: Perform any hardware initialization, that require the RTOS to be
      * running, here. */
+	prvMiscInitialization();
 
     
 

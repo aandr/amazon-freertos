@@ -4,7 +4,7 @@
 * No other uses are authorized. This software is owned by Renesas Electronics Corporation and is protected under all
 * applicable laws, including copyright laws. 
 * THIS SOFTWARE IS PROVIDED "AS IS" AND RENESAS MAKES NO WARRANTIES REGARDING THIS SOFTWARE, WHETHER EXPRESS, IMPLIED
-* OR STATUTORY, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* OR STATUTOR, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
 * NON-INFRINGEMENT.  ALL SUCH WARRANTIES ARE EXPRESSLY DISCLAIMED.TO THE MAXIMUM EXTENT PERMITTED NOT PROHIBITED BY
 * LAW, NEITHER RENESAS ELECTRONICS CORPORATION NOR ANY OF ITS AFFILIATED COMPANIES SHALL BE LIABLE FOR ANY DIRECT,
 * INDIRECT, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES FOR ANY REASON RELATED TO THIS SOFTWARE, EVEN IF RENESAS OR
@@ -22,7 +22,7 @@
 * Device(s)    : R5F565NEDxFP
 * Tool-Chain   : RXC toolchain
 * Description  : Setting of port and mpc registers
-* Creation Date: 2018-09-08
+* Creation Date: 2018-10-29
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -56,23 +56,26 @@ void R_SCI_PinSet_SCI5()
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }
 
-void R_SCI_PinSet_SCI8()
+/***********************************************************************************************************************
+* Function Name: R_SCI_PinSet_SCI6
+* Description  : This function initializes pins for r_sci_rx module
+* Arguments    : none
+* Return Value : none
+***********************************************************************************************************************/
+void R_SCI_PinSet_SCI6()
 {
     R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
 
-	/* Set RXD8/SMISO8/SSCL8 pin */
-	MPC.PC6PFS.BYTE = 0x0AU;
-	PORTC.PMR.BIT.B6 = 1U;
-	PORTC.PDR.BIT.B6 = 0U;
+    /* Set RXD6/SMISO6 pin */
+    MPC.P33PFS.BYTE = 0x0AU;
+    PORT3.PMR.BIT.B3 = 1U;
 
-	/* Set TXD8/SMOSI8/SSDA8 pin */
-	MPC.PC7PFS.BYTE = 0x0AU;
-	PORTC.PDR.BIT.B7 = 1U;
-	PORTC.PMR.BIT.B7 = 1U;
+    /* Set TXD6/SMOSI6 pin */
+    MPC.P32PFS.BYTE = 0x0AU;
+    PORT3.PMR.BIT.B2 = 1U;
 
     R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
 }
-
 
 /***********************************************************************************************************************
 * Function Name: R_SCI_PinSet_SCI10

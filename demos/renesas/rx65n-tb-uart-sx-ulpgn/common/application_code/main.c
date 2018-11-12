@@ -143,6 +143,7 @@ int main( void )
 static void prvMiscInitialization( void )
 {
     /* FIX ME. */
+	vTaskDelay(10000);
 	uart_config();
 	uart_string_printf("Print test.");
 	configPRINT_STRING(("Hello World.\r\n"));
@@ -168,6 +169,8 @@ void vApplicationDaemonTaskStartupHook( void )
                          ucDNSServerAddress,
                          ucMACAddress );
 #endif
+
+
 
     	/* Connect to the wifi before running the demos */
         prvWifiConnect();
@@ -208,6 +211,8 @@ void prvWifiConnect( void )
         {
         }
     }
+
+    vTaskDelay(1000);
 
     /* Setup parameters. */
     xJoinAPParams.pcSSID = clientcredentialWIFI_SSID;

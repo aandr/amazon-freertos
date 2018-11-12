@@ -765,14 +765,14 @@ TEST_GROUP_RUNNER( Full_TCP )
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_CloseWithoutReceiving );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_ShutdownInvalidParams );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_ShutdownWithoutReceiving );
-    //RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Recv_On_Unconnected_Socket );
-    //RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_SameSocketDifferentTasks );
+    RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Recv_On_Unconnected_Socket );
+    RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_SameSocketDifferentTasks );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Connect_InvalidParams );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Connect_InvalidAddressLength );
-    //RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_DifferentSocketsDifferentTasks );
+    RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_DifferentSocketsDifferentTasks );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Socket_TCP );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_SetSockOpt_RCVTIMEO );
-    //RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_NonBlocking_Test );
+    RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_NonBlocking_Test );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_SetSockOpt_InvalidParams );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Shutdown );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Close );

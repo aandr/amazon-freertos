@@ -121,7 +121,7 @@ WIFIReturnCode_t WIFI_On( void )
         xWIFIInitDone = pdTRUE;
     }
 
-    if(0 == sx_ulpgn_init())
+    if(0 == sx_ulpgn_wifi_init())
     {
     	xRetVal = eWiFiSuccess;
     }
@@ -165,6 +165,7 @@ WIFIReturnCode_t WIFI_ConnectAP( const WIFINetworkParams_t * const pxNetworkPara
 		return eWiFiSuccess;
 	}
 
+	vTaskDelay(2000); // appears to be a power issue
 
 
 	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
@@ -207,10 +208,13 @@ WIFIReturnCode_t WIFI_Disconnect( void )
 	//uart_string_printf("WIFI_Disconnect\r\n");
 	xWIFIConnected = 0;
 	// There appear to be modem bugs with repeat connection and disconnection, so we'll do a full restart instead
-	ret = 0 == sx_ulpgn_wifi_disconnect() && 0 == sx_ulpgn_init();
+	ret = sx_ulpgn_wifi_disconnect();
+	if (ret == 0) {
+		ret = sx_ulpgn_wifi_init();
+	}
     xSemaphoreGive(xControlSemaphore);
 
-	if (ret == 1) {
+	if (ret == 0) {
 		return eWiFiSuccess;
 	} else {
 		return eWiFiFailure;

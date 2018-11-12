@@ -1,32 +1,62 @@
 /*
+ * Amazon FreeRTOS V1.4.1
+ * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ *
+ * http://aws.amazon.com/freertos
+ * http://www.FreeRTOS.org
+ */
+
+#ifndef AWS_CLIENT_CREDENTIAL_KEYS_H
+#define AWS_CLIENT_CREDENTIAL_KEYS_H
+
+#include <stdint.h>
+
+/*
  * PEM-encoded client certificate
  *
  * Must include the PEM header and footer:
- * "-----BEGIN CERTIFICATE-----"
- * "...base64 data..."
- * "-----END CERTIFICATE-----";
+ * "-----BEGIN CERTIFICATE-----\n"\
+ * "...base64 data...\n"\
+ * "-----END CERTIFICATE-----\n"
  */
-static const char clientcredentialCLIENT_CERTIFICATE_PEM[] =
-		"-----BEGIN CERTIFICATE-----\n"
-		"MIIDWTCCAkGgAwIBAgIUTfwVHFWGWViQLamSytHyYWFmFbkwDQYJKoZIhvcNAQEL\n"
-		"BQAwTTFLMEkGA1UECwxCQW1hem9uIFdlYiBTZXJ2aWNlcyBPPUFtYXpvbi5jb20g\n"
-		"SW5jLiBMPVNlYXR0bGUgU1Q9V2FzaGluZ3RvbiBDPVVTMB4XDTE4MTAxNDE4NDkx\n"
-		"NloXDTQ5MTIzMTIzNTk1OVowHjEcMBoGA1UEAwwTQVdTIElvVCBDZXJ0aWZpY2F0\n"
-		"ZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALubJt3bWzcoQSDkV0He\n"
-		"5aSHt8lcF2NQ1WRDL4XSAYT4RVkfMFdFrAeXVwE8YH/pvdhbRSTJxFC23PBW4eSd\n"
-		"UgKjPE3sw0t6QT298M5WswogezpC0BDLMnvGaYA7gvtjMn4265ygwnndvzhIdupE\n"
-		"EoXDuUIqYkxYoMuKKcqogXAvlJTGZHUK3DhIxeQyAELFs4swdTcJBqHt//B3/psA\n"
-		"Cod4ll5JUTDmCiolrtq1GBwKPiexwqMaNnzw6l3TFYGjLlKyyPC/B4OgNjNVqCJZ\n"
-		"I8vUDhFDnryG6X/v00rgYnOh1ErIsC+vOkFzRL6YY4F/WTgokhPMs+Vt6V5D/t5e\n"
-		"qxkCAwEAAaNgMF4wHwYDVR0jBBgwFoAUmeL/A+PM4VPhYcXzvepZ2cjUvCQwHQYD\n"
-		"VR0OBBYEFDtWb/OH3eW/dI//h61CyUoY8oksMAwGA1UdEwEB/wQCMAAwDgYDVR0P\n"
-		"AQH/BAQDAgeAMA0GCSqGSIb3DQEBCwUAA4IBAQCCWkHC8kBdzl7hzv6CFEH4llnz\n"
-		"t53cl5jXJjNMZ6rFKq2a1dPo2UykQjhwvMjtuCelpgTSJh35dnX/LP7unWVNjv2f\n"
-		"HPjSUWc79KTHjMY6YghI3hT4tsgRJlcKpnV1mBCC0pM8Fgmg9EUF3GuVtbZm9EKE\n"
-		"Xs0DmeWDkfBAiq7mEMZ++rMsCwUHeJaZ+MQlqP7vAZwE9tTtReIlvUamjmivKS7A\n"
-		"gjcxD64po9JtT6Q5AO6Qa1TTrC0iM0jlUCQiEBdklGBY0b+LkdF6tLO7iYuEUT1+\n"
-		"JYaUBTqb+E1sMzxP+llnl9O617SuAFQ4Svu6duPOdhxtjU5sByc9/1ld/2xL\n"
-		"-----END CERTIFICATE-----\n";
+static const char clientcredentialCLIENT_CERTIFICATE_PEM[] = \
+"-----BEGIN CERTIFICATE-----\n"\
+"MIIDWjCCAkKgAwIBAgIVAIgsyQyAPnWDXWOBG0N2VTl9Xnc0MA0GCSqGSIb3DQEB\n"\
+"CwUAME0xSzBJBgNVBAsMQkFtYXpvbiBXZWIgU2VydmljZXMgTz1BbWF6b24uY29t\n"\
+"IEluYy4gTD1TZWF0dGxlIFNUPVdhc2hpbmd0b24gQz1VUzAeFw0xODEwMjUyMzQy\n"\
+"MjRaFw00OTEyMzEyMzU5NTlaMB4xHDAaBgNVBAMME0FXUyBJb1QgQ2VydGlmaWNh\n"\
+"dGUwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCoXmIju4G2wPLeUPQt\n"\
+"dTIBwS0DoqPM7X1XmY13Te0e5SAzypxQ0cNIjD9/NCoWbSdIOt/7AgAQfYUdhqpN\n"\
+"zBwnMFalPOq+4jjFTfsHvN1QMN4B4PMdM58NecN/BmC1Mp5CvQgQwYucj1wNS61Q\n"\
+"MpECZhwBlwmJvXiGOl1+0sFW4l7zK1yLzXJ31W1CQIuOUUxclErbXwVMKE6OnjSl\n"\
+"tjJduqaAGgN1U6P6A+kqu2Rxbk9v8X+bxnZx5fY3+spbF+KPNHTi/AYmRg6AomYo\n"\
+"1EnjtyChcUvFNxZ9dYO3O3o91ffV5xboBIx6HeIS3ued1JO6G4B/SgaDzxuHwQ+y\n"\
+"wPrtAgMBAAGjYDBeMB8GA1UdIwQYMBaAFDrVvmXlDL5XGRC/3APJvIQ7KcJwMB0G\n"\
+"A1UdDgQWBBRjXdfD1tRVGm4W2RY6AcYVI4HxKDAMBgNVHRMBAf8EAjAAMA4GA1Ud\n"\
+"DwEB/wQEAwIHgDANBgkqhkiG9w0BAQsFAAOCAQEA1O+w7VbqiiS9c/+xuKG59t6k\n"\
+"OOo0jSUPJmwJ45R1uOvC4ZvgRkIoJIlgc+xt9qBHGG2T3J5U6DM2B5u4tIyNYEQ7\n"\
+"iTaVlUK6vvJE/3PuES395QGkJf2szynB/PqqeyhvYoo71CpVcUj4Q6ctae223Nck\n"\
+"P/C0WOt08wNe9NNjikhORzB7AaBtyrCI4jqwIihdUlHkO8p7JLq1bjlm5BXwYimf\n"\
+"qIizGz2xLEzDwYVMiQDaQjLnjbcQpYgIbQ9LHW7pgdMv4Sq8WcyR8Qwr2c3ByAMg\n"\
+"qWnAix8ahZxi2iEM4oatccGjS7y1Dhbd18YwcT2caxRql1AlQBuzlNEMGaorjA==\n"\
+"-----END CERTIFICATE-----\n";
 
 /*
  * PEM-encoded issuer certificate for AWS IoT Just In Time Registration (JITR).
@@ -37,48 +67,66 @@ static const char clientcredentialCLIENT_CERTIFICATE_PEM[] =
  *  https://docs.aws.amazon.com/iot/latest/developerguide/jit-provisioning.html,
  *  https://aws.amazon.com/blogs/iot/just-in-time-registration-of-device-certificates-on-aws-iot/.
  *
- * If you're not using JITR, set the below pointer to NULL.
+ * If you're not using JITR, set below to NULL.
  *
  * Must include the PEM header and footer:
- * "-----BEGIN CERTIFICATE-----"
- * "...base64 data..."
- * "-----END CERTIFICATE-----";
+ * "-----BEGIN CERTIFICATE-----\n"\
+ * "...base64 data...\n"\
+ * "-----END CERTIFICATE-----\n"
  */
-static const char *clientcredentialJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM = NULL;
+
 
 /*
  * PEM-encoded client private key.
  *
  * Must include the PEM header and footer:
- * "-----BEGIN RSA PRIVATE KEY-----"
- * "...base64 data..."
- * "-----END RSA PRIVATE KEY-----";
+ * "-----BEGIN RSA PRIVATE KEY-----\n"\
+ * "...base64 data...\n"\
+ * "-----END RSA PRIVATE KEY-----\n"
  */
-static const char clientcredentialCLIENT_PRIVATE_KEY_PEM[] =
-		"-----BEGIN RSA PRIVATE KEY-----\n"
-		"MIIEpAIBAAKCAQEAu5sm3dtbNyhBIORXQd7lpIe3yVwXY1DVZEMvhdIBhPhFWR8w\n"
-		"V0WsB5dXATxgf+m92FtFJMnEULbc8Fbh5J1SAqM8TezDS3pBPb3wzlazCiB7OkLQ\n"
-		"EMsye8ZpgDuC+2MyfjbrnKDCed2/OEh26kQShcO5QipiTFigy4opyqiBcC+UlMZk\n"
-		"dQrcOEjF5DIAQsWzizB1NwkGoe3/8Hf+mwAKh3iWXklRMOYKKiWu2rUYHAo+J7HC\n"
-		"oxo2fPDqXdMVgaMuUrLI8L8Hg6A2M1WoIlkjy9QOEUOevIbpf+/TSuBic6HUSsiw\n"
-		"L686QXNEvphjgX9ZOCiSE8yz5W3pXkP+3l6rGQIDAQABAoIBAQC3lv+UAMPk2EnT\n"
-		"7GDPn1dPiVj7flmM4V/SPEVXScoe2+7RZkoiPZY534pPNUyiIJWeEsM5WxH4gtr3\n"
-		"f66T0LieyCuNfnMne744s5Xh9spC0MKGozeGF7ORmPtJd/OYGt0g0pIDtvZZ1/z3\n"
-		"EUL9whv2NzEmZN/JIrpINS7smbYBl4AqavfQxMTWFBUO2sSnk5d+Kdl1R8d/c+4S\n"
-		"ojspDHFoRFizHnAhIqh4rb3C7R1EeqPc1hrXT7Stu0mE571yXkYtwU5Ew39UAvId\n"
-		"cjD9+h5wiK5lYf03MDs3NeZruTm+mYBmAILXSdTBaU4vfCT77xKkDk0vDOeuk4GU\n"
-		"emgEIuTZAoGBAO0KTP6XT9lp0AzUKgLCI4LTiN8DlSiTIO9DEQredNH+Su9X6T+A\n"
-		"EjoPzVonqjeBDS49hryyhaZzrKkxd4y2mBkRKCCbEtcCyxnDoNyONLDCwm9j9gq1\n"
-		"+C5Piafj9toXOJRFZ5By+mgOXuTN+/jujVMfnlTh/STuYqrElrKDmlTrAoGBAMqc\n"
-		"n6kup5z35rIzhIHrexmRHSyNvRZFbMnjJwPJKLSNqG53KJikUoqH/p71DYLV244R\n"
-		"lOgj92+Hz094dxVQgkuVCGsL9LWSE0S36/tfukk1WP6iw3kV1vpzahEdUt/Ndycp\n"
-		"vVfwtO7ESY2TwY+HP+oYDqcgmz/BxlL/Zmebec8LAoGBAIKVkiUPJqYXbM4kc6Bh\n"
-		"Yz7HWjfBuYJIy3QD9neOZbzp4k5Il+6rl171JaPtBhDdv20h6AA8OPSh9RSgc8PJ\n"
-		"M7FbikesJozctRbUduIKVWyrXoIPB5SO+tJIbwVWyL8M29aTBaLGNLzubciO0akp\n"
-		"giGw4YDRnquhyClbc8mURolRAoGACAT/BNFF7R6a0P7dBc9uRerKftL1YwZIcg09\n"
-		"pBa4N71Lp2OsBa6rXbRYTa5hZIZWdF8Zx750ssNrXzfjbsKLBbbWaHZGr1Ei1ht5\n"
-		"ia+WTgOAjEOg/Q/yPGOJFThV6WnWh4RNbEeowbKfPq1UgfvWecuN+Ot/eZyP3wUg\n"
-		"5oTu41UCgYAKv8YmuP99skaTUDi8UE/z/X6x0JWY1qo/gDcKfJarjPdpN/xyfAqH\n"
-		"zcMm1ep3zANal3WaIG1wfMxrclMgdUqkGtijas6FwtKdEvkuZanfwEkve6ktuHy3\n"
-		"QWEEankFHqYWr63QmmVoiGwGNJe4FXdzuNx9f1FdQsRn9Ia3kYS9bg==\n"
-		"-----END RSA PRIVATE KEY-----\n";
+static const char clientcredentialCLIENT_PRIVATE_KEY_PEM[] = \
+"-----BEGIN RSA PRIVATE KEY-----\n"\
+"MIIEpAIBAAKCAQEAqF5iI7uBtsDy3lD0LXUyAcEtA6KjzO19V5mNd03tHuUgM8qc\n"\
+"UNHDSIw/fzQqFm0nSDrf+wIAEH2FHYaqTcwcJzBWpTzqvuI4xU37B7zdUDDeAeDz\n"\
+"HTOfDXnDfwZgtTKeQr0IEMGLnI9cDUutUDKRAmYcAZcJib14hjpdftLBVuJe8ytc\n"\
+"i81yd9VtQkCLjlFMXJRK218FTChOjp40pbYyXbqmgBoDdVOj+gPpKrtkcW5Pb/F/\n"\
+"m8Z2ceX2N/rKWxfijzR04vwGJkYOgKJmKNRJ47cgoXFLxTcWfXWDtzt6PdX31ecW\n"\
+"6ASMeh3iEt7nndSTuhuAf0oGg88bh8EPssD67QIDAQABAoIBAGvSLYT2giX3wFBw\n"\
+"hT5LK+AFxn7qe30zpS4hDoAVbkF3t7yTBrGW8zkVX2BlloJQGnTeByumZ0YoK8Px\n"\
+"xkQV7v2FricZMLdXBcYMnzKgVxYQhUuss+PCeBvYG0LQYcQIC2NvzKd2WqLDB88X\n"\
+"5IBUMZrYqxy1jY0gwfsri045R0kMmoruhyKhJWjhHePQl8txEkwbc2m2NlxFZqPk\n"\
+"4dqaL4CR+Gc7jheXginDn6uk5acxopdeckMZ43R8/1hG3jQJsOkEms+VXj0TbkeP\n"\
+"NeRsHJ9EPGHr4H9wkRYjydUDD58aFMKXJwxHBi50/0zF/clSTpPSMXY3uYL9Tk5q\n"\
+"14dKPAECgYEA1D28WxjhXFZrYoKZFGzOC/evo4jB9hcG4lNoug2tYvyQg9gQFSSN\n"\
+"xVwRM3SdBrOqZMv69Sp33o7DaPnIkcmiWlpTNqmM2PoUZ7uD648cNWqlb7gRx/9M\n"\
+"IUsCFVTZKrooTS295s2PGuHHkEP4rQg7SC0Fm86TZDxcDvBwejLpjQECgYEAyxUF\n"\
+"r+gYtK/gZYsv9i0UIMi/WbunQGrT+ZQqEVuzntbcv4Wt4LTDJo4/p8coZ4+xNDDt\n"\
+"hYK7qMyt1x8P0lS+MUZby0LrFOF5YdleAUREjPVzJITfSI+eFe4ZFP5sEPqVGpOw\n"\
+"0V2cQOqMY57vb6A0p/euDLO7TUZdYY/opp1Mce0CgYBmNp0hmifeWlg5BwBGD+hj\n"\
+"ZxOVRGV06L4N/XFwOOoJw+ytMj78j7AfHinCiCSfd6NWC85+h8dWzZZaVgE8BMlF\n"\
+"jj6JErqcPEPbeTkdFrzVFNk7poAZu1+koQUN1OEJbMG/+Yl9P/3tSlLbrYBzhIVY\n"\
+"SyZqVOAy48bKAw2ILEDCAQKBgQCnABmWJzGx3HOWbVg6g6VqtEqOuv71vSOluI7D\n"\
+"iXpzI1OSd5aeE2frm8yC5wa16vcY6SdZxEEXtYE7RwLWvvNMSASSaOwyVpxft8VT\n"\
+"G1WX6PwPyuhmnhutAwhDOFmbuMTGfy9HbEhjJb3e6kMRs1e5zLanIWHkUPnXkeUK\n"\
+"po3HnQKBgQCNgpZvQp2U8xumJRza0D8sHwUQbhW9FtcwaUFZNOthIdVG06bbwlpQ\n"\
+"HxGbg4WhOvxLUMaWEOFGE+ZbNxE/8fzdxOfJABb1iDIkOhSP1ZsjcRLW44MzkO2X\n"\
+"+ROwZnb5mtjxtdJidGLtlDy6u/+KcqydygHMThQoa3pnFdGl3D2ohg==\n"\
+"-----END RSA PRIVATE KEY-----\n";
+
+static const uint32_t clientcredentialCLIENT_CERTIFICATE_LENGTH = sizeof( clientcredentialCLIENT_CERTIFICATE_PEM );
+
+/*
+ * Length of device private key included from aws_clientcredential_keys.h .
+ */
+
+static const uint32_t clientcredentialCLIENT_PRIVATE_KEY_LENGTH = sizeof( clientcredentialCLIENT_PRIVATE_KEY_PEM );
+
+
+/* The constants above are set to const char * pointers defined in aws_demo_runner.c,
+ * and externed here for use in C files.  NOTE!  THIS IS DONE FOR CONVENIENCE
+ * DURING AN EVALUATION PHASE AND IS NOT GOOD PRACTICE FOR PRODUCTION SYSTEMS
+ * WHICH MUST STORE KEYS SECURELY. */
+static const char* clientcredentialJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM = NULL;
+
+#endif /* AWS_CLIENT_CREDENTIAL_KEYS_H */
+
