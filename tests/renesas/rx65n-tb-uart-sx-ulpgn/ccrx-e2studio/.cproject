@@ -102,6 +102,11 @@
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfo.1727278324" name="Changes the warning-level messages to information-level messages" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfo" useByScannerDiscovery="false" value="true" valueType="boolean"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfoNum.1921813303" name="Message number" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.changeMessageInfoNum" useByScannerDiscovery="false" value="21644" valueType="string"/>
 								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.optimize.267313128" name="Optimization level" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.optimize" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.optimize.level0" valueType="enumerated"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.loop.1946668760" name="Perform loop optimization" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.loop" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.loop.defineVal" valueType="enumerated"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.loopNum.858108155" name="Expansion maximum number" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.loopNum" useByScannerDiscovery="false" value="1" valueType="string"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.inline.1927894797" name="Performs inline expansion automatically" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.inline" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.inline.no" valueType="enumerated"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.volatile.294230038" name="Treat global variables as volatile qualified" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.volatile" useByScannerDiscovery="false" value="true" valueType="boolean"/>
+								<option id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.library.2076047395" name="Expansion method of the library function" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.library" useByScannerDiscovery="false" value="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.option.library.functions" valueType="enumerated"/>
 								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType.16071463" name="Compiler Input C" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType"/>
 								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType.334789223" name="Compiler Input CPP" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType"/>
 							</tool>
@@ -511,10 +516,16 @@
 					</folderInfo>
 					<folderInfo id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.configuration.216582545.318060816" name="/" resourcePath="src/FIT_modified_code/r_bsp/board/all">
 						<toolChain id="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain.51213771" name="Renesas CCRX Toolchain" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.hardwaredebug.toolChain" unusedChildren="">
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF;org.eclipse.cdt.core.PE" id="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform" osList="win32" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.targetPlatform"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.476568943" name="DSP Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.dsp.1062041828"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.1939939944" name="Common" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.common.290380019"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1419170994" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1623542158"/>
-							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.709358969" name="Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.1130092213"/>
+							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1419170994" name="Compiler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.compiler.1623542158">
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType.1271347140" name="Compiler Input C" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gcc.inputType"/>
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType.817431505" name="Compiler Input CPP" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.compiler.gpp.inputType"/>
+							</tool>
+							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.709358969" name="Assembler" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.assembler.1130092213">
+								<inputType id="com.renesas.cdt.managedbuild.renesas.ccrx.assembler.inputType.1208177308" name="Assembler InputType" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.assembler.inputType"/>
+							</tool>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.2120543750" name="Linker" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.linker.289112940"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.2095021037" name="Library Generator" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.librarian.1168276755"/>
 							<tool id="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.1093493710" name="Converter" superClass="com.renesas.cdt.managedbuild.renesas.ccrx.base.converter.458205734"/>

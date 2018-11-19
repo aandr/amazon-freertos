@@ -734,11 +734,10 @@ TEST( Full_MQTT, AFQP_MQTT_Init_NULLParams )
     if( TEST_PROTECT() )
     {
         /* Initialize the MQTT context. */
-        ( void ) MQTT_Init( &( xMQTTContext ), &( xInitParams ) );
-
-        /* Since the above call results in assert being fired,
-         * this line must never get executed. */
-        TEST_FAIL();
+        if (0 == MQTT_Init( &( xMQTTContext ), &( xInitParams ) )) {
+        	/* Assert does not work in test conditions, so we also check the return value */
+        	TEST_FAIL();
+        }
     }
 }
 /*-----------------------------------------------------------*/
@@ -978,11 +977,9 @@ TEST( Full_MQTT, AFQP_MQTT_Connect_NULLParams )
     {
         /* Call MQTT_Connect with NULL parameters which will
          * fire assert. */
-        ( void ) MQTT_Connect( &( xMQTTContext ), NULL );
-
-        /* Since the above call results in assert being fired,
-         * this line must never get executed. */
-        TEST_FAIL();
+        if (0 == MQTT_Connect( &( xMQTTContext ), NULL )) {
+        	TEST_FAIL();
+        }
     }
 }
 /*-----------------------------------------------------------*/

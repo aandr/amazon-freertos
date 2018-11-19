@@ -43,7 +43,7 @@
  * This value can be used to compensate for clock differences, and other
  * code overhead.
  */
-#define         integrationtestportableTIMEOUT_OVER_TOLERANCE      20    /* FIX ME. */
+#define         integrationtestportableTIMEOUT_OVER_TOLERANCE      2000    /* FIX ME. */
 
 /**
  * @brief Indicates how much less time than the specified timeout is acceptable for
@@ -53,7 +53,7 @@
  * If networking and tests are on different CPUs, an "under tolerance" is acceptable.
  * For tests where same clock is used for networking and tests.
  */
-#define         integrationtestportableTIMEOUT_UNDER_TOLERANCE     0     /* FIX ME. */
+#define         integrationtestportableTIMEOUT_UNDER_TOLERANCE     2000     /* FIX ME. */
 
 /**
  *  @brief Indicates how long  receive needs to wait for data before Timeout happens.

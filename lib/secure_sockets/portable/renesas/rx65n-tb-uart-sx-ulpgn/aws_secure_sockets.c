@@ -136,9 +136,9 @@ Socket_t SOCKETS_Socket( int32_t lDomain,
     socketId = sx_ulpgn_get_avail_socket();
 
     /* Ensure that only supported values are supplied. */
-    configASSERT( lDomain == SOCKETS_AF_INET );
-    configASSERT( lType == SOCKETS_SOCK_STREAM );
-    configASSERT( lProtocol == SOCKETS_IPPROTO_TCP );
+    if (lDomain != SOCKETS_AF_INET || lType != SOCKETS_SOCK_STREAM || lProtocol != SOCKETS_IPPROTO_TCP) {
+    	return SOCKETS_INVALID_SOCKET;
+    }
 
 	if(ssockets_num_allocated >= MAX_NUM_SSOCKETS || socketId == 255)
 	{
@@ -217,6 +217,10 @@ int32_t SOCKETS_Connect( Socket_t xSocket,
     int32_t ret;
     SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) xSocket; /*lint !e9087 cast used for portability. */
     TLSParams_t xTLSParams = { 0 };
+
+    if (pxContext == SOCKETS_INVALID_SOCKET || pxAddress == NULL) {
+    	return SOCKETS_EINVAL;
+    }
 
     if( ( pxContext != SOCKETS_INVALID_SOCKET ) && ( pxAddress != NULL ) )
     {
@@ -328,7 +332,7 @@ int32_t SOCKETS_Send( Socket_t xSocket,
     SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) xSocket; /*lint !e9087 cast used for portability. */
 
     if( ( xSocket != SOCKETS_INVALID_SOCKET ) &&
-        ( pvBuffer != NULL ) )
+        ( pvBuffer != NULL ))
     {
         pxContext->xSendFlags = ( BaseType_t ) ulFlags;
 
@@ -362,6 +366,10 @@ int32_t SOCKETS_Send( Socket_t xSocket,
 int32_t SOCKETS_Shutdown( Socket_t xSocket,
                           uint32_t ulHow )
 {
+	if (SOCKETS_INVALID_SOCKET == xSocket || (ulHow > 2)) {
+		return SOCKETS_EINVAL;
+	}
+
     SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) xSocket; /*lint !e9087 cast used for portability. */
 
 	return sx_ulpgn_tcp_disconnect(pxContext->xSocket);
@@ -380,6 +388,10 @@ int32_t SOCKETS_Shutdown( Socket_t xSocket,
 int32_t SOCKETS_Close( Socket_t xSocket )
 {
     SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) xSocket; /*lint !e9087 cast used for portability. */
+
+    if (xSocket == SOCKETS_INVALID_SOCKET) {
+    	return SOCKETS_EINVAL;
+    }
 
     if( NULL != pxContext )
     {
@@ -479,6 +491,10 @@ int32_t SOCKETS_SetSockOpt( Socket_t xSocket,
     int32_t lStatus = SOCKETS_ERROR_NONE;
     TickType_t xTimeout;
     SSOCKETContextPtr_t pxContext = ( SSOCKETContextPtr_t ) xSocket; /*lint !e9087 cast used for portability. */
+
+    if (SOCKETS_INVALID_SOCKET == xSocket || lOptionName < 0) {
+    	return SOCKETS_EINVAL;
+    }
 
     switch( lOptionName )
     {

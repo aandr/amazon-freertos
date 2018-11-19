@@ -73,6 +73,7 @@ static uint8_t byte_timeout_overflow_flag[2];
 
 uint8_t g_sx_ulpgn_return_mode;
 uint8_t socket_create_flag[CREATEABLE_SOCKETS];
+uint8_t socket_connect_flag[CREATEABLE_SOCKETS];
 uint8_t socket_recv_buff[CREATEABLE_SOCKETS][1460];
 byteq_hdl_t socket_byteq_hdl[CREATEABLE_SOCKETS];
 uint32_t socket_recv_error_count[4];
@@ -122,6 +123,7 @@ int32_t sx_ulpgn_wifi_init(void)
 
 	for (uint8_t i = 0; i < CREATEABLE_SOCKETS; i++) {
 		socket_create_flag[i] = 0;
+		socket_connect_flag[i] = 0;
 	}
 
 	if (g_sx_ulpgn_semaphore != NULL) {
@@ -477,7 +479,7 @@ int32_t sx_ulpgn_tcp_connect(uint8_t socket_no, uint32_t ipaddr, uint16_t port)
 	int32_t ret;
     if( xSemaphoreTake( g_sx_ulpgn_semaphore, xMaxSemaphoreBlockTime ) == pdTRUE )
     {
-		if(	socket_create_flag[socket_no] == 0)
+		if(	socket_create_flag[socket_no] == 0 || socket_connect_flag[socket_no] == 1)
 		{
 			/* Give back the socketInUse mutex. */
 			( void ) xSemaphoreGive( g_sx_ulpgn_semaphore );
@@ -507,6 +509,9 @@ int32_t sx_ulpgn_tcp_connect(uint8_t socket_no, uint32_t ipaddr, uint16_t port)
 #if ULPGN_USE_UART_NUM == 1
 		ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, buff, 300, 10000, ULPGN_RETURN_CONNECT);
 #endif
+		if (ret == 0) {
+			socket_connect_flag[socket_no] = 1;
+		}
 		/* Give back the socketInUse mutex. */
 		( void ) xSemaphoreGive( g_sx_ulpgn_semaphore );
 
@@ -531,7 +536,7 @@ int32_t sx_ulpgn_tcp_send(uint8_t socket_no, uint8_t *pdata, int32_t length, uin
 
     if( xSemaphoreTake( g_sx_ulpgn_semaphore, xMaxSemaphoreBlockTime ) == pdTRUE )
     {
-    	if(0 == socket_create_flag[socket_no])
+    	if(0 == socket_connect_flag[socket_no])
     	{
 			/* Give back the socketInUse mutex. */
 			( void ) xSemaphoreGive( g_sx_ulpgn_semaphore );
@@ -630,7 +635,7 @@ int32_t sx_ulpgn_tcp_recv(uint8_t socket_no, uint8_t *pdata, int32_t length, uin
 
     if( xSemaphoreTake( g_sx_ulpgn_semaphore, xMaxSemaphoreBlockTime ) == pdTRUE )
     {
-    	if(0 == socket_create_flag[socket_no])
+    	if(0 == socket_connect_flag[socket_no])
     	{
 			/* Give back the socketInUse mutex. */
 			( void ) xSemaphoreGive( g_sx_ulpgn_semaphore );
@@ -762,6 +767,7 @@ int32_t sx_ulpgn_tcp_disconnect(uint8_t socket_no)
 			if(0 == ret)
 			{
 				socket_create_flag[socket_no] = 0;
+				socket_connect_flag[socket_no] = 0;
 #if ULPGN_USE_UART_NUM == 2
 				R_BYTEQ_Flush(socket_byteq_hdl[socket_no]);
 #endif
@@ -1357,16 +1363,18 @@ static void sx_ulpgn_uart_callback_data_port(void *pArgs)
     {
     	if(socket_create_flag[current_socket_index] == 1)
     	{
+
     		ret = R_SCI_Receive(sx_ulpgn_uart_sci_handle[ULPGN_UART_DATA_PORT], &data, 1);
     		if (ret != 0)
 			{
 				socket_recv_error_count[current_socket_index]++;
 				return;
 			}
+
 			/* From RXI interrupt; received character data is in p_args->byte */
 
-    		//ret = R_BYTEQ_Put(socket_byteq_hdl[current_socket_index], p_args->byte);
-    		ret = R_BYTEQ_Put(socket_byteq_hdl[current_socket_index], data);
+    		ret = R_BYTEQ_Put(socket_byteq_hdl[current_socket_index], p_args->byte);
+    		//ret = R_BYTEQ_Put(socket_byteq_hdl[current_socket_index], data);
 			if (ret != 0) {
 				socket_recv_error_count[current_socket_index]++;
 				return;

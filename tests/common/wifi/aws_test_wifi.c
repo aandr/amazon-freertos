@@ -322,9 +322,9 @@ static BaseType_t prvRoundTripTest()
         xEchoServerSockaddr.ucLength = sizeof( SocketsSockaddr_t );
         xEchoServerSockaddr.ucSocketDomain = SOCKETS_AF_INET;
 
-        if(SOCKETS_Connect( xSocket,
+        if(SOCKETS_ERROR_NONE != SOCKETS_Connect( xSocket,
                              &xEchoServerSockaddr,
-                             sizeof( xEchoServerSockaddr ) != SOCKETS_ERROR_NONE)) {
+                             sizeof( xEchoServerSockaddr ))) {
             configPRINTF(("%d", xResult));
             xResult = pdFAIL;
             configPRINTF( ( "Error connecting on the socket.\r\n" ) );

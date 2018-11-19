@@ -268,8 +268,8 @@ void vApplicationSetupTimerInterrupt(void)
 ******************************************************************************/
 void vAssertCalled(void)
 {
-#if(0)
-	TEST_ABORT(); // XXX unity testing
+#if(1)
+	return; // unity testing
     volatile unsigned long ul = 0;
 
     taskENTER_CRITICAL();

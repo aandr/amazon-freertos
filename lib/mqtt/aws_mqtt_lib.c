@@ -2428,6 +2428,14 @@ MQTTReturnCode_t MQTT_Init( MQTTContext_t * pxMQTTContext,
 
     /* These are checked here once and are later used without
      * NULL checks. */
+    if (pxMQTTContext == NULL ||
+    	pxInitParams->pxMQTTSendFxn == NULL ||
+	    pxInitParams->xBufferPoolInterface.pxGetBufferFxn == NULL ||
+	    pxInitParams->xBufferPoolInterface.pxReturnBufferFxn == NULL ||
+	    pxInitParams == NULL) {
+    	return -1;
+    }
+
     mqttconfigASSERT( pxMQTTContext != NULL );
     mqttconfigASSERT( pxInitParams->pxMQTTSendFxn != NULL );
     mqttconfigASSERT( pxInitParams->xBufferPoolInterface.pxGetBufferFxn != NULL );
@@ -2498,6 +2506,15 @@ MQTTReturnCode_t MQTT_Connect( MQTTContext_t * pxMQTTContext,
 
     /* These are checked here once and are later used without
      * NULL checks. */
+
+    if ( pxMQTTContext == NULL,
+    	pxMQTTContext->pxMQTTSendFxn == NULL,
+    	pxMQTTContext->xBufferPoolInterface.pxGetBufferFxn == NULL,
+    	pxMQTTContext->xBufferPoolInterface.pxReturnBufferFxn == NULL,
+    	pxConnectParams == NULL ) {
+    	return -1;
+    }
+
     mqttconfigASSERT( pxMQTTContext != NULL );
     mqttconfigASSERT( pxMQTTContext->pxMQTTSendFxn != NULL );
     mqttconfigASSERT( pxMQTTContext->xBufferPoolInterface.pxGetBufferFxn != NULL );
