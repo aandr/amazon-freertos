@@ -1222,7 +1222,7 @@ static int32_t sx_ulpgn_serial_open(void)
 #if (BSP_CFG_BOARD_REVISION == 1)
 	R_SCI_PinSet_SCI6();
 #elif (BSP_CFG_BOARD_REVISION == 5)
-	R_SCI_PinSet_SCI10();
+	R_SCI_PinSet_SCI0();
 #endif
 
 	g_sx_ulpgn_sci_config[ULPGN_UART_COMMAND_PORT].async.baud_rate    = 115200;
@@ -1236,7 +1236,7 @@ static int32_t sx_ulpgn_serial_open(void)
 #if (BSP_CFG_BOARD_REVISION == 1)
     my_sci_err = R_SCI_Open(SCI_CH6, SCI_MODE_ASYNC, &g_sx_ulpgn_sci_config[ULPGN_UART_COMMAND_PORT], sx_ulpgn_uart_callback_command_port, &sx_ulpgn_uart_sci_handle[ULPGN_UART_COMMAND_PORT]);
 #elif  (BSP_CFG_BOARD_REVISION == 5)
-    my_sci_err = R_SCI_Open(SCI_CH10, SCI_MODE_ASYNC, &g_sx_ulpgn_sci_config[ULPGN_UART_COMMAND_PORT], sx_ulpgn_uart_callback_command_port, &sx_ulpgn_uart_sci_handle[ULPGN_UART_COMMAND_PORT]);
+    my_sci_err = R_SCI_Open(SCI_CH0, SCI_MODE_ASYNC, &g_sx_ulpgn_sci_config[ULPGN_UART_COMMAND_PORT], sx_ulpgn_uart_callback_command_port, &sx_ulpgn_uart_sci_handle[ULPGN_UART_COMMAND_PORT]);
 #endif
 
     if(SCI_SUCCESS != my_sci_err)

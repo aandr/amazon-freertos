@@ -35,6 +35,22 @@ Includes
 Global variables and functions
 ***********************************************************************************************************************/
 
+void R_SCI_PinSet_SCI0()
+{
+    R_BSP_RegisterProtectDisable(BSP_REG_PROTECT_MPC);
+
+    /* Set RXD0/SMISO0/SSCL0 pin */
+    MPC.P20PFS.BYTE = 0x0AU;
+    PORT2.PMR.BIT.B0 = 1U;
+
+    /* Set TXD0/SMOSI0/SSDA0 pin */
+    MPC.P21PFS.BYTE = 0x0AU;
+    PORT2.PMR.BIT.B1 = 1U;
+
+    R_BSP_RegisterProtectEnable(BSP_REG_PROTECT_MPC);
+}
+
+
 /***********************************************************************************************************************
 * Function Name: R_SCI_PinSet_SCI5
 * Description  : This function initializes pins for r_sci_rx module
