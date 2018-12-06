@@ -45,7 +45,7 @@
 #define testrunnerFULL_GGD_HELPER_ENABLED          0
 #define testrunnerFULL_SHADOW_ENABLED              0
 #define testrunnerFULL_MQTT_ENABLED                1
-#define testrunnerFULL_WIFI_ENABLED                1 // 1
+#define testrunnerFULL_WIFI_ENABLED                0 // 1
 #define testrunnerFULL_MEMORYLEAK_ENABLED          1
 #define testrunnerFULL_TLS_ENABLED                 1
 

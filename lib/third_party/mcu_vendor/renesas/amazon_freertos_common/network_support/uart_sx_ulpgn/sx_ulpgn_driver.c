@@ -1,4 +1,4 @@
-#include <stdio.h>
+ #include <stdio.h>
 #include <string.h>
 
 #include "FreeRTOS.h"
@@ -179,6 +179,22 @@ int32_t sx_ulpgn_wifi_init(void)
 	{
 		return ret;
 	}
+
+/*
+	ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, "ATBX1=115200,8,0,1\r", 3, 200, ULPGN_RETURN_OK);
+	if(ret != 0)
+	{
+		return ret;
+	}
+
+*/
+
+	ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, "ATBX2=115200,8,0,1\r", 3, 200, ULPGN_RETURN_OK);
+	if(ret != 0)
+	{
+		return ret;
+	}
+	vTaskDelay(1000);
 
 	/* Escape guard time = 200msec */
 
@@ -998,13 +1014,17 @@ static int32_t sx_ulpgn_change_socket_index(uint8_t socket_no)
 	volatile int32_t timeout;
 	sci_err_t ercd;
 	uint32_t recvcnt = 0;
-	int32_t ret;
+	int32_t ret, buff_len;
 	uint16_t i;
 	uint16_t read_data = 0;;
 	uint8_t before_socket_no;
 	int8_t receive_ret;
+
+
 	if(socket_no != current_socket_index)
 	{
+		memset(buff, 0, sizeof(buff));
+		memset(recvbuff, 0, sizeof(recvbuff));
 		R_BSP_InterruptsDisable();
 		before_socket_no = current_socket_index;
 #if ULPGN_PORT_DEBUG == 1
@@ -1024,7 +1044,7 @@ static int32_t sx_ulpgn_change_socket_index(uint8_t socket_no)
 		}
 		R_BSP_InterruptsEnable();
 
-		sprintf((char *)buff,"ATNSOCKINDEX=%d\r",socket_no);
+		buff_len = sprintf((char *)buff, "ATNSOCKINDEX=%d\r\n", socket_no);
 #if 1
 #if ULPGN_PORT_DEBUG == 1
 		DEBUG_PORT4_DR = 1;
@@ -1041,7 +1061,7 @@ static int32_t sx_ulpgn_change_socket_index(uint8_t socket_no)
 			receive_ret =-1;
 			timeout = 0;
 			g_sx_ulpgn_uart_teiflag[ULPGN_UART_COMMAND_PORT] = 0;
-			ercd = R_SCI_Send(sx_ulpgn_uart_sci_handle[ULPGN_UART_COMMAND_PORT], buff, strlen((const char *)buff));
+			ercd = R_SCI_Send(sx_ulpgn_uart_sci_handle[ULPGN_UART_COMMAND_PORT], buff, strlen((char *)buff));
 			if(SCI_SUCCESS != ercd)
 			{
 				return -1;
@@ -1385,6 +1405,7 @@ static void sx_ulpgn_uart_callback_data_port(void *pArgs)
     	}
     	else
     	{
+//    		vLoggingPrintf("Received on unconnected socket");
     	}
     }
 #if SCI_CFG_TEI_INCLUDED
@@ -1404,7 +1425,8 @@ static void sx_ulpgn_uart_callback_data_port(void *pArgs)
     {
         /* From receiver overflow error interrupt; error data is in p_args->byte
            Error condition is cleared in calling interrupt routine */
-        R_NOP();
+		socket_recv_error_count[current_socket_index]++;
+    	R_NOP();
     }
     else if (SCI_EVT_FRAMING_ERR == p_args->event)
     {

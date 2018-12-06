@@ -34,7 +34,7 @@
  * @brief The number of sockets that can be open at one time on a port.
  *
  */
-#define         integrationtestportableMAX_NUM_UNSECURE_SOCKETS    1    /* FIX ME. */
+#define         integrationtestportableMAX_NUM_UNSECURE_SOCKETS    4    /* FIX ME. */
 
 /**
  * @brief Indicates how much longer than the specified timeout is acceptable for

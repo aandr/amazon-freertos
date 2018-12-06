@@ -763,7 +763,13 @@ static BaseType_t prvCheckTimeout( TickType_t xStartTime,
 
 TEST_GROUP_RUNNER( Full_TCP )
 {
-    RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Socket_InvalidInputParams );
+
+    // RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_DifferentSocketsDifferentTasks );
+    // RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_SameSocketDifferentTasks );
+
+
+	RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Recv_On_Unconnected_Socket );
+	RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Socket_InvalidInputParams );
 
 	RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_SendRecv_VaryLength );
 	RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_SetSockOpt_RCVTIMEO );
@@ -772,9 +778,6 @@ TEST_GROUP_RUNNER( Full_TCP )
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_CloseWithoutReceiving );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_ShutdownInvalidParams );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_ShutdownWithoutReceiving );
-    //RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Recv_On_Unconnected_Socket ); // test is broken
-    //RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_SameSocketDifferentTasks );
-    //RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Threadsafe_DifferentSocketsDifferentTasks );
 
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Connect_InvalidParams );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_Connect_InvalidAddressLength );
@@ -790,12 +793,15 @@ TEST_GROUP_RUNNER( Full_TCP )
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_htons_HappyCase );
     RUN_TEST_CASE( Full_TCP, AFQP_SOCKETS_inet_addr_quick_HappyCase );
 
-    #if ( tcptestSECURE_SERVER == 1 )
+
+   	#if ( tcptestSECURE_SERVER == 1 )
+    	RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_TwoSecureConnections );
+
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_CloseInvalidParams );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_CloseWithoutReceiving );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_ShutdownInvalidParams );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_ShutdownWithoutReceiving );
-        // RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_Recv_On_Unconnected_Socket ); // test is broken
+        RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_Recv_On_Unconnected_Socket );
         //RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_Threadsafe_SameSocketDifferentTasks );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_SetSockOpt_TRUSTED_SERVER_CERTIFICATE );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_SetSockOpt_SERVER_NAME_INDICATION );
@@ -816,7 +822,6 @@ TEST_GROUP_RUNNER( Full_TCP )
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_Recv_Invalid );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_SockEventHandler );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_NonBlockingConnect );
-        //RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_TwoSecureConnections );
         RUN_TEST_CASE( Full_TCP, AFQP_SECURE_SOCKETS_SetSecureOptionsAfterConnect );
     #endif /* if ( tcptestSECURE_SERVER == 1 ) */
 }
@@ -974,12 +979,12 @@ static void prvSOCKETS_Recv_On_Unconnected_Socket( Server_t xConn )
         xResult = prvSetSockOptHelper( xSocket, xReceiveTimeOut, xSendTimeOut );
         TEST_ASSERT_EQUAL_INT32_MESSAGE( SOCKETS_ERROR_NONE, xResult, "SetSockOpt Failed" );
 
-
         /* We connect another socket. The rational for this is a bug that was experienced in the past
          * where the data would be received  by from another socket. */
          /* Attempt to establish the requested connection. */
         xResult = prvConnectHelperWithRetry( &xConnectedSocket, xConn, xReceiveTimeOut, xSendTimeOut, &xConnectedSocketOpen );
         TEST_ASSERT_EQUAL_INT32_MESSAGE( SOCKETS_ERROR_NONE, xResult, "Failed to connect" );
+
 
         /* Send data from the connected socket. */
         xResult = SOCKETS_Send( xConnectedSocket, &ucBuf, 1, 0 );
@@ -2333,7 +2338,7 @@ static void prvSOCKETS_Threadsafe_SameSocketDifferentTasks( Server_t xConn )
 
             if( ( mode == SMALL_BUFFER_HIGH_PRIORITY ) || ( mode == SMALL_BUFFER_LOW_PRIORITY ) )
             {
-                xRecvLen = 1;
+                xRecvLen = 10;
             }
 
             while( lTotalReceived < tcptestTWICE_MAX_FRAME_SIZE )
@@ -2442,7 +2447,7 @@ static void prvEchoClientTxTask( void * pvParameters )
         /* Set buffer size to 1 if requested. */
         if( ( mode == SMALL_BUFFER_HIGH_PRIORITY ) || ( mode == SMALL_BUFFER_LOW_PRIORITY ) )
         {
-            xMaxBufferSize = 1;
+            xMaxBufferSize = 10;
         }
 
         /* Wait for the Rx task to create and connect the socket. */

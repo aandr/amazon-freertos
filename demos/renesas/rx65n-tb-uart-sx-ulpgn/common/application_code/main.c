@@ -145,12 +145,14 @@ static void prvMiscInitialization( void )
     /* FIX ME. */
 	vTaskDelay(10000);
 	uart_config();
+
 	uart_string_printf("Print test.");
-	configPRINT_STRING(("Hello World.\r\n"));
-    /* Start logging task. */
     xLoggingTaskInitialize( mainLOGGING_TASK_STACK_SIZE,
                             tskIDLE_PRIORITY,
                             mainLOGGING_MESSAGE_QUEUE_LENGTH );
+
+	configPRINT_STRING(("Hello World.\r\n"));
+    /* Start logging task. */
 }
 /*-----------------------------------------------------------*/
 

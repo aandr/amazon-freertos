@@ -78,7 +78,7 @@
 /* Software timer related definitions. */
 #define configUSE_TIMERS                           1
 #define configTIMER_TASK_PRIORITY                  ( configMAX_PRIORITIES - 1 )
-#define configTIMER_QUEUE_LENGTH                   5
+#define configTIMER_QUEUE_LENGTH                   8
 #define configTIMER_TASK_STACK_DEPTH               ( configMINIMAL_STACK_SIZE)
 
 /* The interrupt priority used by the kernel itself for the tick interrupt and
