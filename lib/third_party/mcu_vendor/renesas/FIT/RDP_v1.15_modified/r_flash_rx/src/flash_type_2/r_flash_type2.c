@@ -91,6 +91,12 @@ Includes   <System Includes> , "Project Includes"
 #define FCU_RAM_SIZE    0x2000
 
 
+/* Neither ROM to ROM nor DF to DF transfer */
+#ifndef FLASH_CFG_FLASH_TO_FLASH
+#define FLASH_CFG_FLASH_TO_FLASH (0) /* It is better for XXXX_CFG_YYYY to be defined as 0 rather than not defined. */
+#endif
+
+
 /******************************************************************************
 Typedef definitions
 ******************************************************************************/
@@ -459,7 +465,7 @@ static flash_err_t data_flash_write (uint32_t address, uint32_t data, uint32_t s
         *(FCU_BYTE_PTR)DF_ADDRESS = 0xE8;
 
         /* Specify data transfer size to data flash area */
-        *(FCU_BYTE_PTR)DF_ADDRESS = size;
+        *(FCU_BYTE_PTR)DF_ADDRESS = (uint8_t)size;
 
         /* Iterate through the number of data bytes */
         while(n++ < size)
@@ -476,9 +482,8 @@ static flash_err_t data_flash_write (uint32_t address, uint32_t data, uint32_t s
 
 #if (FLASH_CFG_DATA_FLASH_BGO == 1)
         /* Program is ongoing, return */
-        return FLASH_SUCCESS;
-#endif
-
+        /* No more things to do here so that falls through to the last return statement */
+#else
         /* Set the wait counter with timeout value */
         wait_cnt = WAIT_MAX_DF_WRITE;
 
@@ -506,6 +511,7 @@ static flash_err_t data_flash_write (uint32_t address, uint32_t data, uint32_t s
             /* Return FLASH_FAILURE, operation failure */
             return FLASH_ERR_FAILURE;
         }
+#endif
     }
     /* Data size is invalid */
     else
@@ -523,7 +529,7 @@ End of function  data_flash_write
 
 
 #if (FLASH_CFG_CODE_FLASH_ENABLE == 1)
-#define FLASH_PE_MODE_SECTION    R_ATTRIB_SECTION_CHANGE_F(FRAM)
+#define FLASH_PE_MODE_SECTION    R_ATTRIB_SECTION_CHANGE(P, FRAM)
 #define FLASH_SECTION_CHANGE_END R_ATTRIB_SECTION_CHANGE_END
 #else
 #define FLASH_PE_MODE_SECTION
@@ -971,7 +977,7 @@ End of function  flash_lockbit_protection
 * Arguments    : none
 * Return Value : none
 ******************************************************************************/
-R_PRAGMA_INTERRUPT(Excep_FCU_FIFERR, VECT(FCU, FIFERR))
+R_PRAGMA_STATIC_INTERRUPT(Excep_FCU_FIFERR, VECT(FCU, FIFERR))
 FLASH_PE_MODE_SECTION
 R_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FIFERR(void)
 {
@@ -998,14 +1004,14 @@ R_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FIFERR(void)
 * Arguments    : none
 * Return Value : none
 ******************************************************************************/
-R_PRAGMA_INTERRUPT(Excep_FCU_FRDYI, VECT(FCU, FRDYI))
+R_PRAGMA_STATIC_INTERRUPT(Excep_FCU_FRDYI, VECT(FCU, FRDYI))
 FLASH_PE_MODE_SECTION
 R_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
 {
     /* Local variables */
     uint32_t num_byte_to_write;
     uint8_t  ret;
-#ifdef FLASH_CFG_FLASH_TO_FLASH
+#if (FLASH_CFG_FLASH_TO_FLASH == 1)
     uint32_t i;
 #endif
     rom_block_info_t block_info;
@@ -1058,7 +1064,7 @@ R_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
 
                 if (g_bgo_bytes > 0)
                 {
-                    block_number = block_info.block_number - 1;         // next block to erase
+                    block_number = (uint32_t)(block_info.block_number - 1); // next block to erase
                     flash_get_romBlock_info (block_number, &block_info);
 
                     g_bgo_flash_addr = block_info.start_addr;
@@ -1115,7 +1121,7 @@ R_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
             /* Get maximum programming size that can currently be used. */
             num_byte_to_write = flash_get_program_size(g_bgo_bytes, g_bgo_flash_addr);
 
-#ifdef FLASH_CFG_FLASH_TO_FLASH
+#if (FLASH_CFG_FLASH_TO_FLASH == 1)
             /* Check to see if we need to buffer more data */
             if( g_flash_to_flash_op == 1 )
             {
@@ -1152,7 +1158,7 @@ R_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
             {
                 /* Writing DF */
                 /* Call the Programming function again for next bytes */
-#ifdef FLASH_CFG_FLASH_TO_FLASH
+#if (FLASH_CFG_FLASH_TO_FLASH == 1)
                 if( g_flash_to_flash_op == 1 )
                 {
                     ret = data_flash_write( g_bgo_flash_addr,
@@ -1175,7 +1181,7 @@ R_ATTRIB_STATIC_INTERRUPT void Excep_FCU_FRDYI(void)
             {
                 /* Writing ROM */
                 /* Call the Programming function */
-#ifdef FLASH_CFG_FLASH_TO_FLASH
+#if (FLASH_CFG_FLASH_TO_FLASH == 1)
                 if( g_flash_to_flash_op == 1 )
                 {
                     /* Use RAM array */
@@ -1291,7 +1297,7 @@ static flash_err_t rom_write (uint32_t address, uint32_t data, uint32_t size)
 
     /* Write the FCU Program command */
     *(FCU_BYTE_PTR)address = 0xE8;
-    *(FCU_BYTE_PTR)address = size;
+    *(FCU_BYTE_PTR)address = (uint8_t)size;
 
     /* Write 'size' bytes into flash, 16-bits at a time */
     for(i = 0; i < size; i++)
@@ -1308,9 +1314,8 @@ static flash_err_t rom_write (uint32_t address, uint32_t data, uint32_t size)
 
     #if (FLASH_CFG_CODE_FLASH_BGO == 1)
     /* Return, rest of programming will be done in interrupt */
-    return FLASH_SUCCESS;
-    #endif
-
+    /* No more things to do here so that falls through to the last return statement */
+    #else
     /* Set timeout wait counter value */
     wait_cnt = WAIT_MAX_ROM_WRITE;
 
@@ -1338,6 +1343,7 @@ static flash_err_t rom_write (uint32_t address, uint32_t data, uint32_t size)
         /* Return FLASH_FAILURE, operation failure */
         return FLASH_ERR_FAILURE;
     }
+    #endif
 
 #endif /* FLASH_CFG_ENABLE_ROM_PROGRAMMING */
 
@@ -1765,7 +1771,7 @@ flash_err_t flash_api_erase(flash_block_address_t block_start_address, uint32_t 
     uint32_t block_size;
 #endif
 
-    volatile int32_t bytes_to_erase = (int32_t)(FLASH_DF_BLOCK_1 - FLASH_DF_BLOCK_0)  * num_blocks;   // for DF this is correct
+    volatile uint32_t bytes_to_erase = (FLASH_DF_BLOCK_1 - FLASH_DF_BLOCK_0) * num_blocks;   // for DF this is correct
 
     /* Take off upper byte since for programming/erase addresses for ROM are
           the same as read addresses except upper byte is masked off to 0's.
@@ -1908,14 +1914,14 @@ flash_err_t flash_api_erase(flash_block_address_t block_start_address, uint32_t 
              {
 #if (FLASH_CFG_CODE_FLASH_BGO == 1)
                  break;
-#endif
+#else
 
                 // Code Flash Erase
                  /* Advance pointer to next block */
                  block_number--;
 
                  // Decrease by the amount we just wrote
-                 bytes_to_erase -= (int32_t)block_info.block_size;
+                 bytes_to_erase -= block_info.block_size;
 
                  if (bytes_to_erase == 0)
                  {
@@ -1927,18 +1933,20 @@ flash_err_t flash_api_erase(flash_block_address_t block_start_address, uint32_t 
                      return(FLASH_ERR_ADDRESS);
                  }
                  block_start_address = (flash_block_address_t)block_info.start_addr;
+#endif
              }
              else
              {
 #if (FLASH_CFG_DATA_FLASH_BGO == 1)
                  break;
-#endif
+#else
                  // Data Flash Erase
                  /* Advance pointer to next block */
                   block_start_address += DF_ERASE_BLOCK_SIZE;
 
                   /* Subtract off bytes erased */
                   bytes_to_erase -= DF_ERASE_BLOCK_SIZE;
+#endif
              }
 
          }
@@ -2095,7 +2103,7 @@ flash_err_t flash_api_write(uint32_t buffer_addr, uint32_t flash_addr, uint32_t 
 
     /* Declare result container and number of bytes to write variables */
     uint32_t num_byte_to_write;
-#ifdef FLASH_CFG_FLASH_TO_FLASH
+#if (FLASH_CFG_FLASH_TO_FLASH == 1)
     /* Local variable when using FLASH_CFG_FLASH_TO_FLASH */
     uint16_t i;
 #endif
@@ -2147,7 +2155,7 @@ flash_err_t flash_api_write(uint32_t buffer_addr, uint32_t flash_addr, uint32_t 
 #if (FLASH_CFG_CODE_FLASH_ENABLE == 0)
         /* ROM operations are not enabled! Enable them in r_flash_rx_config.h */
         return FLASH_ERR_FAILURE;
-#endif
+#else
 
         /* Check if the number of bytes were passed is a multiple of the
            programming size for ROM */
@@ -2191,6 +2199,7 @@ flash_err_t flash_api_write(uint32_t buffer_addr, uint32_t flash_addr, uint32_t 
 
         /* Set FCU to ROM PE mode */
         g_current_mode = ROM_PE_MODE;
+#endif
     }
     else
     {
@@ -2205,7 +2214,7 @@ flash_err_t flash_api_write(uint32_t buffer_addr, uint32_t flash_addr, uint32_t 
         return FLASH_ERR_BUSY;
     }
 
-#ifdef FLASH_CFG_FLASH_TO_FLASH
+#if (FLASH_CFG_FLASH_TO_FLASH == 1)
     /* Are we doing a ROM to ROM or DF to DF transfer? */
     if( (buffer_addr >= ROM_PE_ADDR) ||
         ((buffer_addr >= DF_ADDRESS) && (buffer_addr < (DF_ADDRESS + MCU_DATA_FLASH_SIZE_BYTES))))
@@ -2383,7 +2392,7 @@ flash_err_t flash_api_write(uint32_t buffer_addr, uint32_t flash_addr, uint32_t 
            flash write */
         bytes -= num_byte_to_write;
 
-    #ifdef FLASH_CFG_FLASH_TO_FLASH
+    #if (FLASH_CFG_FLASH_TO_FLASH == 1)
         /* Check to see if we need to buffer more data */
         if( (bytes > 0) &&
             (g_flash_to_flash_op == 1) )
@@ -2825,6 +2834,11 @@ FLASH_PE_MODE_SECTION
 static uint32_t flash_get_program_size (uint32_t bytes, uint32_t flash_addr)
 {
     uint32_t num_byte_to_write = 0;
+
+#if !defined(DF_PROGRAM_SIZE_LARGE)
+    R_INTERNAL_NOT_USED(bytes);
+    R_INTERNAL_NOT_USED(flash_addr);
+#endif
 
     if( g_current_mode == FLD_PE_MODE )
     {

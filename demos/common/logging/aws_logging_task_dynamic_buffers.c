@@ -1,5 +1,5 @@
 /*
- * Amazon FreeRTOS V1.4.1
+ * Amazon FreeRTOS V1.4.4
  * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -27,18 +27,28 @@
 /*
  */
 
-/* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "queue.h"
+/* Trial use of StdAfx.h to check the availability of the header.
+ * This will be reverted later. */
+#if defined(__RX) || defined(__RX__)
 
-/* Logging includes. */
-#include "aws_logging_task.h"
+#include "StdAfx.h"
 
-/* Standard includes. */
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
+#else /* defined(__RX) || defined(__RX__) */
+
+///* FreeRTOS includes. */
+//#include "FreeRTOS.h"
+//#include "task.h"
+//#include "queue.h"
+//
+///* Logging includes. */
+//#include "aws_logging_task.h"
+//
+///* Standard includes. */
+//#include <stdio.h>
+//#include <stdarg.h>
+//#include <string.h>
+
+#endif /* defined(__RX) || defined(__RX__) */
 
 /* Sanity check all the definitions required by this file are set. */
 #ifndef configPRINT_STRING
@@ -139,7 +149,11 @@ void vLoggingPrintf( const char *pcFormat, ... )
 {
     size_t xLength = 0;
     int32_t xLength2 = 0;
+#if defined(__RX) && defined(__CCRX__)
+    va_list args = NULL; /* Avoid CC-RX's compiler warning caused by CC-RX's va_start() implementation */
+#else
     va_list args;
+#endif
     char *pcPrintString = NULL;
 
     /* The queue is created by xLoggingTaskInitialize().  Check

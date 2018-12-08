@@ -23,7 +23,8 @@ This is our root directory called <root>.
 
 Getting Start Steps:
  step1:  Refer to the Development Environment (recommended) section to get the board and tools.
- step2:  Setup tools for your PC.
+ step2:  Setup tools for your PC, Compiler and IDE are mandatory.
+         Others are just reference information, already implemented into step3 data, no need setup.
  step3:  Download RX MCUs Amazon FreeRTOS from GitHub. (Maybe you already done)
          https://github.com/renesas-rx/amazon-freertos
  step4:  Make your AWS account, and make your "Things" on AWS,
@@ -38,11 +39,14 @@ Getting Start Steps:
            clientcredentialCLIENT_PRIVATE_KEY_PEM[]
  step6:  Start Renesas IDE (e2 studio) and import Amazon FreeRTOS project.
          import sequence: file->import->existing project into workspace -> select a root directory
-         The project folder is placed into <root>/demos/renesas/rx65n-rsk/ccrx-e2studio6
+         The project folder is placed into <root>/demos/renesas/rx65n-rsk/ccrx-e2studio
          Please specify this directory only.
          This directory is top of reference. You can also use other project.
          Please select tested project shown into Development Environment (tested or no matrix) section
          in this Readme.
+         Note: "DO NOT SET" the check for "Copy projects into workspace" in "Import Projects" dialog.
+               Because, some of source in "<root>/lib" folder are outside of project directory.
+               So if this check would exist, some of source in "<root>/lib" folder will be missing.
  step7:  Build
  step8:  Execute, confirm console log will show the Echo message from AWS.
          The log will be output from G1CUSB (or other UART/USB) connector as UART/USB.
@@ -347,7 +351,7 @@ Compiler: CC-RX V2.08 (you need non-expired evaluation license or product licens
     [en] https://www.renesas.com/us/en/products/software-tools/tools/compiler-assembler/compiler-package-for-rx-family-e2studio.html
     [ja] https://www.renesas.com/jp/ja/products/software-tools/tools/compiler-assembler/compiler-package-for-rx-family-e2studio.html
 
-IDE: e2 studio V7.0.0
+IDE: e2 studio V7.1.0
     [en] https://www.renesas.com/us/en/products/software-tools/tools/ide/e2studio.html
     [ja] https://www.renesas.com/jp/ja/products/software-tools/tools/ide/e2studio.html
     
@@ -445,6 +449,30 @@ Board: RX64M GR-KAEDE
          5(GND)        ----- CN10-1pin
          6(VCC)        ----- CN10-2pin
 
+Board: RX63N GR-SAKURA II
+    [en] http://gadget.renesas.com/en/product/sakura.html
+    [ja] http://gadget.renesas.com/ja/product/sakura.html
+
+         The log will be output from CN8 2pin=TxD0(P20) connector as UART.
+         Please set baud-rate as 115200bps, 8bit-data, no-parity, 1 stop-bit,
+         and "LF" only as return code for your console.
+         PMOD UART/USB convertor is provided by Digilent.
+         https://store.digilentinc.com/pmod-usbuart-usb-to-uart-interface/
+
+         Please contact as following.
+         PMOD UART/USB ----- RX63N GR-SAKURA CN8/CN10
+         1             -----
+         2(TxD)        ----- CN8-2pin
+         3             -----
+         4             -----
+         5(GND)        ----- CN10-1pin
+         6(VCC)        ----- CN10-2pin
+         
+         Notice:
+         GR-SAKURA has 2 types. GR-SAKURA has 128KB-RAM, GR-SAKURA II has 256KB-RAM.
+         Please confirm your GR-SAKURA is GR-SAKURA II that has 256KB-RAM RX63N (R5F563NYDDFP).
+         Because Amazon FreeRTOS needs RAM size 128KB over.
+         
 Board: RX65N Target Board
     [en] https://www.renesas.com/us/en/products/software-tools/boards-and-kits/cpu-mpu-boards/rx-family-target-board.html
     [ja] https://www.renesas.com/jp/ja/products/software-tools/boards-and-kits/cpu-mpu-boards/rx-family-target-board.html
@@ -582,6 +610,7 @@ Borad number:
  (4)RX64M GR-KAEDE
  (5)Renesas Starter Kit+ for RX65N-2MB + Silex SX-ULPGN PMOD
  (6)RX65N Target Board + Silex SX-ULPGN PMOD
+ (7)RX63N GR-SAKURA II
 
 Connection pattern number:
  (1)pattern1: wifi module has TCP/IP and SSL/TLS, Amazon recommends this pattern as RAM<16KB.
@@ -609,6 +638,7 @@ Board Connection / Compiler (1) (2) (3) (1) (2) (3) (1) (2) (3)
 (4)   (2)        /           x   x       x   -   -   -   -     
 (5)   (4)        /           x   x       x   -   -   -   -     
 (6)   (4)        /           x   x       x   -   -   -   -     
+(7)   (2)        /           x   x       x   -   -   -   -     
 
   x: tested (MQTT echo demo)
   *: now trying(still junk)
@@ -674,6 +704,10 @@ RX65N Envision Kit、RX65N RSK(2MB版/暗号器あり品)をターゲットに�
 --------------------------------------------------------------------------
 ■課題まとめ★
 --------------------------------------------------------------------------
+　2018/11/25
+　　改行コードをLFにした方が良いのではないか。本家はLF、ルネサスはCRLFと
+　　なっている。
+　　
 　2018/09/24
 　　岡宮氏からGR-ROSE(GCC)用のリンカスクリプトをもらった。
 　　ユーザアプリによりRAMが割りあたる設定になっている。
@@ -741,6 +775,296 @@ RX65N Envision Kit、RX65N RSK(2MB版/暗号器あり品)をターゲットに�
 --------------------------------------------------------------------------
 ■ポーティング記録	★印が解決すべき課題
 --------------------------------------------------------------------------
+2018/12/01
+　引き続きテスト環境の調整。
+　平日に別メンバーが進めた進捗を確認。
+　エラー件数は98個のテスト項目に対して全体で14件(TCP:3, MQTT:2,TLS:2,PKCS:7)。
+　
+　TCPのエラーを見てみる。
+　-AFQP_SECURE_SOCKETS_Threadsafe_SameSocketDifferentTasks 
+　-AFQP_SECURE_SOCKETS_Threadsafe_DifferentSocketsDifferentTasks
+　-AFQP_SOCKETS_Socket_InvalidInputParams
+　
+　AFQP_SECURE_SOCKETS_Threadsafe_SameSocketDifferentTasksを動かしてみると、
+　通信時にTCPウィンドウが足りずに再送等が発生しテストがスムーズに動いていないようだ。
+　過去性能評価したときに調整した設定パラメータに変更することでテストOKになった。
+
+　-----引用-----
+　　まず、\demos\renesas\rx65n-rsk\common\config_files\FreeRTOSIPConfig.h
+　デフォルトOFFになっているが、以下TCPウィンドウウィングメカニズムをONに
+　することでハードウェアの性能を最大限に引き出すことができる。
+　/* USE_WIN: Let TCP use windowing mechanism. */
+　#define ipconfigUSE_TCP_WIN                            ( 0 )
+　
+　また、性能を出すためにはTCPウィンドウウィングのために多くのRAMが
+　必要となる。以下設定変更を施すことでハードウェア性能が引き出せる。
+　/* Define the size of Tx buffer for TCP sockets. */
+　#define ipconfigTCP_TX_BUFFER_LENGTH                   ( 1460*8 )
+
+　さらにEtherドライバの受信ディスクリプタも複数用意する必要がある。
+　\demos\renesas\rx65n-rsk\ccrx-e2studio\src\smc_gen\r_config\r_ether_rx_config.h
+　/* The number of Rx descriptors. */
+　#define ETHER_CFG_EMAC_RX_DESCRIPTORS               (12)
+　/* The number of Tx descriptors. */
+　#define ETHER_CFG_EMAC_TX_DESCRIPTORS               (4)
+　-----引用終わり-----
+　
+　AFQP_SECURE_SOCKETS_Threadsafe_DifferentSocketsDifferentTasksは、
+　SSL/TLS接続を別ソケット別タスクで並行して10回行うテスト。
+　Amazon FreeRTOSが想定する完了時間がタイムアウト時間として設定されているようで、
+　RX65Nでは正しく動いてはいるが時間切れになっているようだ。
+　最適化がOFFになっていたので、ONにして試してみる。
+　ギリギリセーフ？　OKになった。
+　
+　AFQP_SOCKETS_Socket_InvalidInputParamsは異常なソケット値を入れて
+　正しく検出するかのテスト。
+　正しく検出してvAssertCalled()を呼び出されてはいるが、ここでTEST_ABORT()してないので
+　そのまま次の処理に進んでいるようだ？
+　FreeRTOSConfig.hのconfigASSERT()の実装周りが期待値に達していないようだ。
+　configASSERT()からTEST_ABORT()が呼ばれている。unityのインクルードファイルを呼ばないと
+　TEST_ABORT()のシンボルが見つからないので、#include "unity_internals.h" を追加。
+　これでOKになった。
+　
+　次にTLSのエラーを見てみる。
+　-AFQP_TLS_ConnectMalformedCert(落ちるべきテストが通る)
+　-AFQP_TLS_ConnectUntrustedCert(落ちるべきテストが通る)
+　
+　TLSテスト側がテスト用の証明書と秘密鍵を登録しようとするが、PKCSの実装体(aws_pkcs11_pal.c)において
+　PKCS11_PAL_SaveObject()で同じラベル名が指定されても、リストに追加する実装になっていた。
+　同じラベル名が指定されたら、リスト中の同名のラベル名の登録を解除しなければならない。
+　このテストでは、システムで使用するラベル①と、テスト用のラベル②があり、ラベル①はシステム初期化時に、
+　ラベル②はTLSテスト初期化時にPKCS11_PAL_SaveObject()で渡される。
+　TLSテストは後にPKCS11_PAL_FindObject()を使用してラベル②に紐づくハンドルが出力されることを期待するが、
+　ラベル①に紐づくハンドルが出てきてしまう。ラベル①に紐づくハンドルに紐づく証明書、秘密鍵は正常なので
+　落ちるべきテストが通ってしまう。
+　PKCS11_PAL_SaveObject()とPKCS11_PAL_FindObject()の実装を修正してテストOKになった。
+　逆に、以下3個がエラーになった。テスト用の証明書データと秘密鍵がうまく作れていないようだ。これは後で確認する。
+　AFQP_TLS_ConnectEC
+　AFQP_TLS_ConnectRSA
+　AFQP_TLS_ConnectBYOCCredentials
+　
+　ここまでで一旦コードを登録。
+　
+　次にMQTTのエラーを見てみる。
+　以下2個がエラーを出力している。
+　AFQP_MQTT_Init_NULLParams
+　AFQP_MQTT_Connect_NULLParams
+　
+　mqttconfigASSERT()がabortできていないことが原因のようだ。
+　aws_mqtt_config.h のmqttconfigASSERT()の実装を修正し全件OKとなった。
+　
+　次にPKCSのエラーを見てみる。
+　以下7個がエラーを出力している。
+　AFQP_Verify_HappyPath
+　AFQP_Verify_InvalidParams
+　AFQP_TestRSAExport
+　AFQP_TestECDSAExport
+　AFQP_SignVerifyRoundTripWithCorrectRSAPublicKey
+　AFQP_SignVerifyRoundTripWithCorrectECPublicKey
+　AFQP_KeyGenerationEcdsaHappyPath
+　
+　AFQP_Verify_HappyPathを追いかけてみる。
+　どうやらPKCS11関連の証明書、秘密鍵をストレージに保存する際に属性情報がうまく保持できていないようだ。
+　public keyなのにprivate keyと判定されて属性エラーになって落ちている様子。
+　
+　PKCSの実装体(aws_pkcs11_pal.c)を見直す。
+　pkcs_data[xHandle - 1].Label.type の値で判断していたが、他社の実装を参考に
+　pkcs_data[xHandle - 1].Label.value の値がpkcs11configLABEL_DEVICE_PRIVATE_KEY_FOR_TLSなどと
+　一致しているかどうかで判断するように変更。
+　
+　これでエラーは残り以下2点になった。
+　
+　AFQP_SignVerifyRoundTripWithCorrectECPublicKey
+　AFQP_KeyGenerationEcdsaHappyPath
+　
+　local_storage[]の容量が足りないようなので増やしておく。
+　PKCS11_PAL_SaveObject()ですでに登録済みのラベルと同じラベルが来た時に、
+　すでに登録済みのラベルはPKCS_DATA_STATUS_DELETED状態にしているが、
+　すでにPKCS_DATA_STATUS_DELETED状態のラベルが居る場合の実装が抜けていた。
+　すでにPKCS_DATA_STATUS_DELETED状態のラベルは無視してサーチするように変更。
+　
+　これでエラーは残り以下1点になった。
+　
+　AFQP_KeyGenerationEcdsaHappyPath
+　
+　以下aws_pkcs11_mbedtls.c の1482行目あたりのコードが影響して署名検証に失敗している様子。
+　意図が分からないのでAmazon側に確認。
+　ひとまず保留。
+　
+        *pxPrivateKey = PKCS11_PAL_SaveObject( &pxPrivateTemplate->xLabel, pucDerFile + pkcs11KEY_GEN_MAX_DER_SIZE - xResult, xResult );
+        /* FIXME: This is a hack.*/
+        *pxPublicKey = *pxPrivateKey + 1;
+        xResult = CKR_OK;
+
+　ここまでで、全テストを通しで走らせてみる。エラーは残り2件。もう少しだ。
+
+　AFQP_KeyGenerationEcdsaHappyPath
+　AFQP_TLS_ConnectEC
+　
+　ここまでで一旦コードを登録。
+
+2018/11/25
+　3連休のまとめ。他の仕事があるので3日目はAmazon関連はこれにて終了。
+　テスト環境はだいたい整った。
+　　https://github.com/renesas-rx/amazon-freertos/tree/master/tests
+　　→Amazon FreeRTOS Qualification Program Developer Guide.pdf
+　　
+　マニュアルが良くできている。これを見ればだいたい分かる。
+　テストは最低限以下が必要。
+　　testrunnerFULL_TCP_ENABLED
+　　testrunnerFULL_MQTT_ENABLED
+　　testrunnerFULL_PKCS11_ENABLED
+　　testrunnerFULL_TLS_ENABLED
+　　testrunnerFULL_WIFI_ENABLED
+　　
+　現時点でRX63N GR-SAKURAにてtestrunnerFULL_TCP_ENABLEDが概ね動いているところ。
+　動いてないテストは以下2点。（AFQP_SECURE_SOCKETS_Threadsafe_SameSocketDifferentTasksの
+　後にまだ動いてないテストがある可能性有り）
+　　TEST(Full_TCP, AFQP_SOCKETS_Socket_InvalidInputParams)
+　　TEST(Full_TCP, AFQP_SECURE_SOCKETS_Threadsafe_SameSocketDifferentTasks)
+　
+　AFQP_SECURE_SOCKETS_Threadsafe_SameSocketDifferentTasksのあとにヒープ不足になって
+　システムが停止する状態。
+　
+　Full_TCPテストの通信相手は以下2種類。
+　　TCPのエコーサーバ
+　　TLSのエコーサーバ
+　　
+　これらはgo言語で書かれたプログラムで動作する。必要に応じてgo言語をPC環境にインストールが必要。
+　サーバプログラムは以下に格納されている。
+　　https://github.com/renesas-rx/amazon-freertos/tree/master/tools/echo_server
+　
+　これらを動かしておいて、マイコン上のソフトは以下コードにサーバ情報を設定しておけば良い。
+　　https://github.com/renesas-rx/amazon-freertos/blob/master/tests/common/include/aws_test_tcp.h
+　
+　サーバ証明書をセットする必要があるが、PEMからC言語に変換するツールが準備されている。
+　　https://github.com/renesas-rx/amazon-freertos/blob/master/tools/certificate_configuration/PEMfileToCString.html
+　
+　マニュアルを見てみるとあとややこしい感じがするのは、Appendix G: TLSくらいか。
+　改ざんされた証明書データを準備する必要などがあるようだが、まあマニュアル通りに進めていけば大丈夫そう。
+　
+　ひとまず以上。
+
+2018/11/24
+　GR-SAKURAでテスト環境を構築。
+　ひとまずビルドが通って何かしらテストログが出力されることを確認。
+　ただし、DHCPが完了する前にテストが走り始めてしまい、うまくいかない。
+　ネットワーク初期化周りを調整する必要がありそうだ。
+　
+　NetworkInterface.c で リンク状態をチェックするためにソフトウェアタイマを立ち上げているが
+　起動後しばらくしないと動かないようだ。受信タスクは動いているので受信タスクと同じよう
+　タスクでリンク状態を確認するよう変更。
+　共通コードなので他の環境に影響していないか要確認。（多分大丈夫なはず）
+　
+　テストが動き出した。以下でFailになっている。
+　TEST(Full_TCP, AFQP_SOCKETS_Socket_InvalidTooManySockets)
+　FAIL: Expected 1 Was 0. Max num sockets test failed
+　
+　aws_test_tcp.c でテストOKになっているテストケースは#if 0で省略しておく。（コミットはしない）
+　
+　デバッガで中身を見てみると、2個目のソケットの生成でエラーを吐いている様子。
+　→prvSOCKETS_Socket_InvalidTooManySockets()の1772行目
+　　xSocket = SOCKETS_Socket( SOCKETS_AF_INET, SOCKETS_SOCK_STREAM, SOCKETS_IPPROTO_TCP );
+
+　1746行目に次のようなコメントがあり、ifdef 対象環境ではテストが無効化されている。
+　/* Socket can be created as much as there is memory */
+
+　このテストはTCP/IPを無線LANモジュール側にオフロードしている場合に、無線LANモジュール側が
+　生成できるソケットの限界値を確かめるためのテストだ。
+　RXマイコンもメモリがあるだけソケットを作れるのでテストを無効化して良いはず。
+　ただし、同じRXマイコンでも環境によってはTCP/IPを無線LANモジュール側にオフロードするので
+　さらに分岐が必要。要検討。とりあえず __RX のときはテスト無効化とする。
+　AFQP_SOCKETS_Socket_InvalidTooManySocketsのテストがOKとなった。
+　
+　次のエラーはAFQP_SOCKETS_Socket_InvalidInputParamsだがよく分からない。保留。
+　ここまででTCPのパラメータ入出力関係のテストがOKになるようだ。
+　
+　次のテストは暗号化されたエコーサーバとの通信テスト。
+　AWSのクレデンシャルを設定してそれを使ってテストするようだ。
+　以下のようにaws_test_tcp.hにコメントがある。
+　
+　/* Encrypted Echo Server.
+　* If tcptestSECURE_SERVER is set to 1, the following must be updated:
+　* 1. aws_clientcredential.h to use a valid AWS endpoint.
+　* 2. aws_clientcredential_keys.h with corresponding AWS keys.
+　* 3. tcptestECHO_SERVER_TLS_ADDR0-3 with the IP address of an
+　* echo server using TLS.
+　* 4. tcptestECHO_PORT_TLS, with the port number of the echo server
+　* using TLS.
+　* 5. tcptestECHO_HOST_ROOT_CA with the trusted root certificate of the
+　* echo server using TLS. */
+　
+　1と2は実験用のクレデンシャルデータを使えばOK。
+　tcptestECHO_SERVER_TLS_ADDR0-3はなんぞ？
+　デフォルトで入っている 34.218.25.197 は何だろう。
+
+　whoisで調べたら以下がでてきた。
+　ec2-34-218-25-197.us-west-2.compute.amazonaws.com
+　
+　よく分からないのでマニュアルを見てみよう。
+　https://github.com/renesas-rx/amazon-freertos/tree/master/tests
+　　→Amazon FreeRTOS Qualification Program Developer Guide.pdf
+　　
+　tcptestECHO_SERVER_TLS_ADDR0で検索したら出てきた。
+　Appendix L: TLS Server Setup
+　
+　ローカルでTLSサーバを立ててそれを対向にしてテストを実行するようだ。
+　OpenSSL の go を使うようだ。cygwinで動かしてみよう。
+　go をWindowsにインストールしたら cygwin で動いた。
+　https://golang.org/dl/
+　
+　RXマイコン側に設定を施す。ローカルのTLSサーバのIPアドレスを
+　tcptestECHO_SERVER_TLS_ADDR0-3に入れて、tcptestECHO_PORT_TLSのポート番号をセット。
+　TLSサーバ側のポート番号は9000番になった。
+　tcptestECHO_HOST_ROOT_CAは、適当に作ったオレオレ証明書を貼れば良いようだ。
+
+　確かAmazon FreeRTOSのパッケージの中のtoolsフォルダに
+　PEMをC言語に変換する便利ツールが入っていたはず。気が利いてますな。
+　https://github.com/renesas-rx/amazon-freertos/blob/master/tools/certificate_configuration/PEMfileToCString.html
+　
+　ここまでで以下テストがパスするようになった。
+　TEST(Full_TCP, AFQP_SECURE_SOCKETS_CloseInvalidParams) PASS
+　TEST(Full_TCP, AFQP_SECURE_SOCKETS_CloseWithoutReceiving) PASS
+　TEST(Full_TCP, AFQP_SECURE_SOCKETS_ShutdownInvalidParams) PAS
+　TEST(Full_TCP, AFQP_SECURE_SOCKETS_ShutdownWithoutReceiving) PASS
+　TEST(Full_TCP, AFQP_SECURE_SOCKETS_Recv_On_Unconnected_Socket) PASS
+　
+　NGが出ているのは以下。
+　TEST(Full_TCP, AFQP_SECURE_SOCKETS_Threadsafe_SameSocketDifferentTasks)
+　
+　ひとまずここまでコミットしてみる。
+
+2018/11/23
+　しばらくGitHub上の公式のアップデートを行っていなかったが開発自体は順調に推移。
+　主にボードの量産手配やテストの段取りを進めている。
+　テストはAmazon FreeRTOSのかなり前のバージョンを土台にして6エラーを残して通った状況。
+　最新版でPKCS周りの実装及びテストが変更になったため、GitHub上で関係者間でコード共有し
+　最新版でテスト環境の最終整備を行う方向で進める。
+　とはいえ11/23-25の3連休は休みであるためシェルティの私物のGR-SAKURAとE2 Liteで
+　開発を進める。26日以降に受験対象の環境であるRX65N RSK (Ether)の環境で
+　テスト環境の最終整備を継続していく。
+　
+　まずはRX63N GR-SAKURAの環境の再確認。
+　e2 studioのCC-RX環境から。
+　特に問題なくビルドは通るがRAMが128KBギリギリになっている。
+　NoMaY氏と相談し、256KBのRAM搭載のGR-SAKURA限定にすることで調整済み。
+　各種デバイス設定を「R5F563NYDDFP」に変更。これでRAMが厳しい状況が改善した。
+　合わせてFreeRTOSのヒープ量も86KBから128KBに変更。動作確認OK。
+　
+　CS+のCC-RX環境の動作確認。
+　各種デバイス設定を「R5F563NYDDFP」に変更。
+　セクション設定でROMの開始位置が0xffc00000から0xfff00000に変更。
+　特に問題なし。動作確認OK。
+　
+　続いてe2 studioのGCC環境。
+　各種デバイス設定を「R5F563NYDDFP」に変更。
+　特に問題なし。動作確認OK。
+　ただし1個課題発見。現状SCI経由UARTでPCにシステムログを送っているが、
+　printf()経由で仮想コンソール（E1_DBG_PORT.RX_DATA/E1_DBG_PORT.TX_DATA)と通信する場合に
+　パスが分からない。CC-RXの場合は、printf()->標準関数ライブラリ->charput() (r_bspのlowlvl.c)->E1_DBG_PORT.TX_DATAの
+　経路であるがGCCの場合はどうか。GCCのマニュアルを確認してBSPに実装する必要がある。
+　⇒BSPの開発者にインプット。
+　
 2018/09/24
 　NoMaY氏がBSPを共通化してくれている。
 　この状態でひとまず全環境の動作を確認し、リリースビルドを作成する。

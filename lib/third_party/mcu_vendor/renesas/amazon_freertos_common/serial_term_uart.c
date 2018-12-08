@@ -34,13 +34,13 @@
 /*****************************************************************************
 Includes   <System Includes> , "Project Includes"
 ******************************************************************************/
-#include <stdio.h>              // For sprintf
+#include <string.h>              // For strlen
 #include "FreeRTOS.h"
 #include "serial_term_uart.h"   // Serial Transfer Demo interface file.
 #include "platform.h"           // Located in the FIT BSP module
 #include "r_sci_rx_if.h"        // The SCI module API interface file.
 #include "r_byteq_if.h"         // The BYTEQ module API interface file.
-#include "r_sci_rx_config.h"    // User configurable options for the SCI module
+#include "r_bsp_config.h"       // User configurable options for the BSP module
 #include "r_pinset.h"
 
 
@@ -176,27 +176,37 @@ static void my_sci_callback(void *pArgs)
 
 } /* End of function my_sci_callback() */
 
-
-void uart_string_printf(char * pString)
-{
-	uint8_t out_str[configLOGGING_MAX_MESSAGE_LENGTH];
-	//uint8_t out_str[120];
-	int32_t length = 0;
+void uart_string_printf(char *pString) {
+	uint16_t str_length = 0;
+	uint16_t transmit_length = 0;
 	sci_err_t sci_err;
 	uint32_t retry = 0xFFFF;
 
-	length = sprintf((char *)out_str, pString);
-	if (length > 0)
-	{
-		do
-		{
-			sci_err = R_SCI_Send(my_sci_handle, out_str, (uint16_t)length);
-			retry--;
-		} while ((SCI_ERR_XCVR_BUSY == sci_err) && (retry > 0)); // retry if previous transmission still in progress.
+	str_length = (uint16_t)strlen(pString);
 
-		if (SCI_SUCCESS != sci_err)
-		{
-			R_NOP(); //TODO error handling code
+	while ((retry > 0) && (str_length > 0)) {
+
+		R_SCI_Control(my_sci_handle,SCI_CMD_TX_Q_BYTES_FREE, &transmit_length);
+
+		if(transmit_length>str_length){
+			transmit_length = str_length;
 		}
+
+		sci_err = R_SCI_Send(my_sci_handle, (uint8_t *) pString,
+				 transmit_length);
+
+		if ((sci_err == SCI_ERR_XCVR_BUSY) || (sci_err == SCI_ERR_INSUFFICIENT_SPACE)) {
+			retry--; // retry if previous transmission still in progress or tx buffer is insufficient.
+			continue;
+		}
+
+		str_length -= transmit_length;
+		pString += transmit_length;
+
 	}
+
+	if (SCI_SUCCESS != sci_err) {
+		R_NOP(); //TODO error handling code
+	}
+
 }

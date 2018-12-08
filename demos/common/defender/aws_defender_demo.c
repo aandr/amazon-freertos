@@ -1,5 +1,5 @@
 /*
- * Amazon FreeRTOS Device Defender Demo V1.4.1
+ * Amazon FreeRTOS Device Defender Demo V1.4.4
  * Copyright (C) 2018 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -24,17 +24,27 @@
  * http://www.FreeRTOS.org
  */
 
-/* Standard includes. */
-#include "stdio.h"
-#include "string.h"
+/* Trial use of StdAfx.h to check the availability of the header.
+ * This will be reverted later. */
+#if defined(__RX) || defined(__RX__)
 
-/* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "message_buffer.h"
-#include "task.h"
+#include "StdAfx.h"
 
-/* Defender includes. */
-#include "aws_defender.h"
+#else /* defined(__RX) || defined(__RX__) */
+
+///* Standard includes. */
+//#include "stdio.h"
+//#include "string.h"
+//
+///* FreeRTOS includes. */
+//#include "FreeRTOS.h"
+//#include "message_buffer.h"
+//#include "task.h"
+//
+///* Defender includes. */
+//#include "aws_defender.h"
+
+#endif /* defined(__RX) || defined(__RX__) */
 
 /* Demo for device defender */
 static void prvDefenderDemo( void * );
@@ -56,11 +66,11 @@ static void prvLogReportStatus( DefenderReportStatus_t eStartStatus );
 
 void vStartDeviceDefenderDemo( void )
 {
-    configSTACK_DEPTH_TYPE const usStackDepth = configMINIMAL_STACK_SIZE;
+    configSTACK_DEPTH_TYPE const xStackDepth = configMINIMAL_STACK_SIZE;
 
     ( void ) xTaskCreate( prvDefenderDemo,
                           "Defender Demo",
-                          usStackDepth,
+                          xStackDepth,
                           NULL,
                           tskIDLE_PRIORITY,
                           NULL );
@@ -68,19 +78,18 @@ void vStartDeviceDefenderDemo( void )
 
 static void prvDefenderDemo( void * param )
 {
-    DefenderMetric_t pxMetricsList[] =
-    {
-        pxDEFENDER_tcp_connections,
-    };
+    DefenderMetric_t xMetricsList[ 1 ];
     int32_t lReportPeriodSec = 300;
     DefenderErr_t eInitStatus;
     DefenderErr_t ePeriodStatus;
     DefenderErr_t eStartStatus;
 
+    xMetricsList[ 0 ] = xDefenderTCPConnections;
+
     /* Silence warning about unused param */
     ( void ) param;
 
-    eInitStatus = DEFENDER_MetricsInit( pxMetricsList );
+    eInitStatus = DEFENDER_MetricsInit( xMetricsList );
     prvLogInitStatus( eInitStatus );
 
     ePeriodStatus = DEFENDER_ReportPeriodSet( lReportPeriodSec );

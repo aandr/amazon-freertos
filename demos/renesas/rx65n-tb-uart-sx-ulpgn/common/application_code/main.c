@@ -23,23 +23,8 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  http://www.FreeRTOS.org
 */
 
-/* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include <stdio.h>
-#include <string.h>
-
-/* Renesas */
-#include "serial_term_uart.h"
-
-/* Demo includes */
-#include "aws_demo_runner.h"
-
-/* Aws Library Includes includes. */
-#include "aws_system_init.h"
-#include "aws_wifi.h"
-#include "aws_clientcredential.h"
-#include "aws_application_version.h"
+/* Application Framework include. */
+#include "StdAfx.h"
 
 #define mainLOGGING_TASK_STACK_SIZE         ( configMINIMAL_STACK_SIZE * 6 )
 #define mainLOGGING_MESSAGE_QUEUE_LENGTH    ( 15 )
@@ -118,7 +103,7 @@ static void prvMiscInitialization( void );
 /**
  * @brief Application runtime entry point.
  */
-int main( void )
+void main( void )
 {
     /* Perform any hardware initialization that does not require the RTOS to be
      * running.  */
@@ -135,8 +120,6 @@ int main( void )
     {
      	vTaskDelay(10000);
     }
-
-    return 0;
 }
 /*-----------------------------------------------------------*/
 
@@ -177,6 +160,8 @@ void vApplicationDaemonTaskStartupHook( void )
     	/* Connect to the wifi before running the demos */
         prvWifiConnect();
 
+        /* Provision the device with AWS certificate and private key. */
+        vDevModeKeyProvisioning();
 
         /* Run all demos. */
         DEMO_RUNNER_RunDemos();
@@ -240,14 +225,11 @@ void prvWifiConnect( void )
 #endif
 /*-----------------------------------------------------------*/
 
-#if ( ipconfigUSE_LLMNR != 0 ) || ( ipconfigUSE_NBNS != 0 ) || ( ipconfigDHCP_REGISTER_HOSTNAME == 1 )
-
-const char * pcApplicationHostnameHook( void )
-{
-    /* Assign the name "FreeRTOS" to this network node.  This function will
-     * be called during the DHCP: the machine will be registered with an IP
-     * address plus this name. */
-    return "RX65N_FREERTOS_TCP_TEST";
-}
-
-#endif
+//const char * pcApplicationHostnameHook( void )
+//{
+//    /* Assign the name "FreeRTOS" to this network node.  This function will
+//     * be called during the DHCP: the machine will be registered with an IP
+//     * address plus this name. */
+//    return "RX65N_FREERTOS_TCP_TEST";
+//}
+///*-----------------------------------------------------------*/

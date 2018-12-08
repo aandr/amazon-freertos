@@ -47,7 +47,7 @@
 #define configUSE_PORT_OPTIMISED_TASK_SELECTION    0
 #define configMAX_PRIORITIES                       ( 7 )
 #define configTICK_RATE_HZ                         ( 1000 )
-#define configMINIMAL_STACK_SIZE                   ( ( unsigned short ) 180 )
+#define configMINIMAL_STACK_SIZE                   ( ( unsigned short ) 512 )
 #define configTOTAL_HEAP_SIZE                      ( ( size_t ) ( 128U * 1024U ) )
 #define configMAX_TASK_NAME_LEN                    ( 12 )
 #define configUSE_TRACE_FACILITY                   1
@@ -65,8 +65,8 @@
 
 #define configUSE_DAEMON_TASK_STARTUP_HOOK 1
 
-#define configCPU_CLOCK_HZ				( 120000000UL )
-#define configPERIPHERAL_CLOCK_HZ		( 60000000UL )
+#define configCPU_CLOCK_HZ				( 96000000UL )
+#define configPERIPHERAL_CLOCK_HZ		( 48000000UL )
 #define configUSE_QUEUE_SETS			1
 
 /* Hook function related definitions. */
@@ -78,8 +78,8 @@
 /* Software timer related definitions. */
 #define configUSE_TIMERS                           1
 #define configTIMER_TASK_PRIORITY                  ( configMAX_PRIORITIES - 1 )
-#define configTIMER_QUEUE_LENGTH                   8
-#define configTIMER_TASK_STACK_DEPTH               ( configMINIMAL_STACK_SIZE)
+#define configTIMER_QUEUE_LENGTH                   5
+#define configTIMER_TASK_STACK_DEPTH               ( configMINIMAL_STACK_SIZE * 6 )
 
 /* The interrupt priority used by the kernel itself for the tick interrupt and
 the pended interrupt.  This would normally be the lowest priority. */
@@ -261,7 +261,7 @@ extern void vLoggingPrintf( const char * pcFormat, ... );
 #define configPROFILING                      ( 0 )
 
 /* Pseudo random number generater used by some demo tasks. */
-extern uint32_t ulRand();
+uint32_t ulRand(void);
 #define configRAND32()    ulRand()
 
 /* The platform FreeRTOS is running on. */

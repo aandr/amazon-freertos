@@ -284,7 +284,7 @@ void operating_frequency_set (void)
     SYSTEM.LOCOCR.BYTE = 0x01;
     
     /* Wait for five the LOCO cycles */
-    /* 5 count of LOCO : (1000000/216000)*5Å‡23.148148148us
+    /* 5 count of LOCO : (1000000/216000)*5ÔøΩÔøΩ23.148148148us
        23 + 2 = 25us ("+2" is overhead cycle) */
     R_BSP_SoftwareDelay((uint32_t)25, BSP_DELAY_MICROSECS);
 #endif
@@ -472,6 +472,7 @@ static void clock_source_select (void)
         for (i = 0; i < 4; i++)
         {
             dummy = RTC.RCR4.BYTE;
+            R_INTERNAL_NOT_USED(&dummy); /* The '&' is for volatile declaration of the "dummy". */
         }
 
         if (0 != RTC.RCR4.BIT.RCKSEL)
@@ -491,6 +492,7 @@ static void clock_source_select (void)
         for (i = 0; i < 4; i++)
         {
             dummy = RTC.RCR3.BYTE;
+            R_INTERNAL_NOT_USED(&dummy); /* The '&' is for volatile declaration of the "dummy". */
         }
 
         if (0 != RTC.RCR3.BIT.RTCEN)
@@ -535,6 +537,7 @@ static void clock_source_select (void)
         for (i = 0; i < 4; i++)
         {
             dummy = RTC.RCR3.BYTE;
+            R_INTERNAL_NOT_USED(&dummy); /* The '&' is for volatile declaration of the "dummy". */
         }
 
         if (tmp != RTC.RCR3.BIT.RTCDV)
@@ -579,6 +582,7 @@ static void clock_source_select (void)
         for (i = 0; i < 4; i++)
         {
              dummy = RTC.RCR3.BIT.RTCEN;
+             R_INTERNAL_NOT_USED(&dummy); /* The '&' is for volatile declaration of the "dummy". */
         }
 
         if (1 != RTC.RCR3.BIT.RTCEN)

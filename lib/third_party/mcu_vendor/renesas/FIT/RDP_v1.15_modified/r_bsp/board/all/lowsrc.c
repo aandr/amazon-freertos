@@ -32,6 +32,7 @@
 *         :(01.11.2017 2.00     Added the bsp startup module disable function.)
 *         : 27.07.2018 2.01     Added the comment to for statement.
 *         : xx.xx.xxxx 2.02     Added support for GNUC and ICCRX.
+*                               Removed the wrong comment to for statement.
 ***********************************************************************************************************************/
 
 /***********************************************************************************************************************
@@ -43,7 +44,7 @@ Includes   <System Includes> , "Project Includes"
 #if (BSP_CFG_STARTUP_DISABLE == 0)
 
 /* Do not include this file if stdio is disabled in r_bsp_config. */
-#if defined(BSP_CFG_IO_LIB_ENABLE) && (BSP_CFG_IO_LIB_ENABLE == 1)
+#if (BSP_CFG_IO_LIB_ENABLE == 1)
 
 #if defined(__CCRX__)
 
@@ -99,7 +100,7 @@ const int _nfiles = IOSTREAM;  /* The number of files for input/output files */
 #endif
 char flmod[IOSTREAM];          /* The location for the mode of opened file.  */
 
-unsigned char sml_buf[IOSTREAM];
+//unsigned char sml_buf[IOSTREAM];
 
 #define FPATH_STDIN     "C:\\stdin"
 #define FPATH_STDOUT    "C:\\stdout"
@@ -127,9 +128,9 @@ extern char fptell(unsigned char, long*);
 /* RX */
 #elif defined( __RX )
 /* Output one character to standard output */
-extern void charput(unsigned char);
+extern void charput(uint32_t); // uint32_t is used for the E1 Virtual Console
 /* Input one character from standard input */
-extern unsigned char charget(void);
+extern uint32_t charget(void); // uint32_t is used for the E1 Virtual Console
 
 /* H8 Advanced mode */
 #elif defined( __2000A__ ) || defined( __2600A__ ) || defined( __300HA__ ) || defined( __H8SXN__ ) || defined( __H8SXA__ ) || defined( __H8SXM__ ) || defined( __H8SXX__ )
@@ -233,7 +234,6 @@ void _CLOSEALL( void )
 {
     long i;
 
-    /* WAIT_LOOP */
     for( i=0; i < _nfiles; i++ )
     {
         /* Checks if the file is opened or not                               */
@@ -336,7 +336,6 @@ int write(int  fileno,               /* File number                       */
         else if( (fileno == STDOUT) || (fileno == STDERR) ) 
                                                 /* Standard Error/output   */
         {
-            /* WAIT_LOOP */
             for( i = count; i > 0; --i )
             {
                 c = *buf++;
@@ -367,7 +366,6 @@ int read( int fileno, char *buf, unsigned int count )
 
        if((flmod[fileno]&_MOPENR) || (flmod[fileno]&O_RDWR))
        {
-             /* WAIT_LOOP */
              for(i = count; i > 0; i--)
              {
                    *buf = charget();

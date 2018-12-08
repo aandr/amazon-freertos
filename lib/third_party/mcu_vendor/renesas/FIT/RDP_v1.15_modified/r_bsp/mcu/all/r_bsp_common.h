@@ -45,18 +45,26 @@
 *                               Added support for GNUC and ICCRX.
 ***********************************************************************************************************************/
 
+/* Neither r_compiler.h nor r_bsp_config.h is included yet in r_bsp.h so that defines in these files can not be used. */
+
 /***********************************************************************************************************************
 Includes   <System Includes> , "Project Includes"
 ***********************************************************************************************************************/
-/* If C99 is supported by your toolchain then use the included fixed-width integer, bool, etc support. If not, then
- * use the included r_typedefs.h file.
- */
-#if __STDC_VERSION__ >= 199901L
+/* C99 (or later) is necessary because r_compiler.h uses Pragma operator and variadic macros.
+ * This means that r_typedefs.h is not used in any case. */
+#if !defined(__cplusplus)
+/* All implementation is C99 (or later) */
+#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #include    <stdint.h>
 #include    <stdbool.h>
 #include    <stddef.h>
 #else
-#include    "r_typedefs.h"
+#error "This version of FIT needs C99 (or later)."
+#endif
+#else
+/* Interface might be referred from C++ */
+#include    <stdint.h>
+#include    <stddef.h>
 #endif
 
 #if defined(__CCRX__) || defined(__ICCRX__)
@@ -74,6 +82,17 @@ Macro definitions
 /* Version Number of r_bsp. */
 #define R_BSP_VERSION_MAJOR           (3)
 #define R_BSP_VERSION_MINOR           (80)
+
+/* This macro is used to suppress compiler messages about not only a parameter but also a auto variable not being used
+ * in a function. The nice thing about using this implementation is that it does not take any extra RAM or ROM.
+ * This macro is available for the followings:
+ * CC-RX's 'M0520826:Parameter "XXXX" was never referenced'
+ * CC-RX's 'W0520550:Variable "XXXX" was set but never used'
+ * GNURX's 'unused parameter 'XXXX' [-Wunused-parameter]'
+ * GNURX's 'variable 'XXXX' set but not used [-Wunused-but-set-variable]'
+ * When the variable is declared as volatile, the '&' can be applied like 'R_INTERNAL_NOT_USED(&volatile_variable);'.
+ */
+#define R_INTERNAL_NOT_USED(p)        ((void)(p))
 
 /***********************************************************************************************************************
 Typedef definitions
@@ -99,10 +118,9 @@ Exported global functions (to be accessed by other files)
 uint32_t R_BSP_GetVersion(void);
 bool R_BSP_SoftwareDelay(uint32_t delay, bsp_delay_units_t units);
 uint32_t R_BSP_GetIClkFreqHz(void);
-#if BSP_CFG_RUN_IN_USER_MODE==1
-#if defined(__GNUC__) || defined(__ICCRX__)
-void Change_PSW_PM_to_UserMode(void);
-#endif /* defined(__GNUC__), defined(__ICCRX__) */
-#endif
+void R_BSP_Change_PSW_PM_to_UserMode(void);
+
+/* Return the current ICLK frequency in Hz.  Called by R_BSP_GetIClkFreqHz(). */
+uint32_t get_iclk_freq_hz(void);
 
 

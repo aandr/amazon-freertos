@@ -31,6 +31,8 @@
 #ifndef _AWS_OTA_AGENT_H_
 #define _AWS_OTA_AGENT_H_
 
+#include "aws_ota_agent_config.h"
+
 /* Type definitions for OTA Agent */
 #include "aws_ota_types.h"
 
@@ -51,6 +53,7 @@ extern const char pcOTA_JSON_FileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ]
 /**
  * @brief Special OTA Agent printing definition.
  */
+#if !defined(OTA_DEBUG_LOG_LEVEL)
 #define OTA_DEBUG_LOG_LEVEL 1
 #if OTA_DEBUG_LOG_LEVEL >= 1
 #define DEFINE_OTA_METHOD_NAME(name) static const char OTA_METHOD_NAME[] = name;
@@ -72,6 +75,7 @@ extern const char pcOTA_JSON_FileSignatureKey[ OTA_FILE_SIG_KEY_STR_MAX_LENGTH ]
 #else
 #define DEFINE_OTA_METHOD_NAME_L3(name)
 #define OTA_LOG_L3(...)
+#endif
 #endif
 
 /** 
@@ -215,7 +219,7 @@ typedef struct {
 									
         int32_t     iFileHandle;        /*!< Device internal file pointer or handle.
 	                                     * File type is handle after file is open for write. */
-#if WIN32
+#if defined(WIN32) && WIN32 != 0
         FILE       *pstFile;            /*!< File type is stdio FILE structure after file is open for write. */
 #endif
 		uint8_t    *pucFile;            /*!< File type is RAM/Flash image pointer after file is open for write. */

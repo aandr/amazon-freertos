@@ -6,6 +6,7 @@
 #include "platform.h"
 #include "r_sci_rx_if.h"
 #include "r_byteq_if.h"
+#include "r_sci_rx_pinset.h"
 #include "sx_ulpgn_driver.h"
 
 
@@ -254,7 +255,7 @@ int32_t sx_ulpgn_wifi_init(void)
 	return ret;
 }
 
-int32_t sx_ulpgn_wifi_connect(uint8_t *pssid, uint32_t security, uint8_t *ppass)
+int32_t sx_ulpgn_wifi_connect(const char *pssid, uint32_t security, const char *ppass)
 {
 	int32_t ret;
 	char *pstr,pstr2;
@@ -806,7 +807,7 @@ int32_t sx_ulpgn_tcp_disconnect(uint8_t socket_no)
 
 }
 
-int32_t sx_ulpgn_dns_query(uint8_t *ptextstring, uint32_t *ulipaddr)
+int32_t sx_ulpgn_dns_query(const char *ptextstring, uint32_t *ulipaddr)
 {
 	uint32_t result;
 	uint32_t ipaddr[4];
@@ -820,7 +821,7 @@ int32_t sx_ulpgn_dns_query(uint8_t *ptextstring, uint32_t *ulipaddr)
 	{
 		return -1;
 	}
-	scanf_ret = sscanf((const char *)recvbuff, "%d\r\n%d.%d.%d.%d\r\n",&result, &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
+	scanf_ret = sscanf((const char *)recvbuff, "%lu\r\n%lu.%lu.%lu.%lu\r\n",&result, &ipaddr[0], &ipaddr[1], &ipaddr[2], &ipaddr[3]);
 	if(scanf_ret != 5)
 	{
 		return -1;

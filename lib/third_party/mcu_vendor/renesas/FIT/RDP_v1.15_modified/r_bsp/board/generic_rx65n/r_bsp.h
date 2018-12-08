@@ -40,13 +40,17 @@
 #define PLATFORM_DEFINED
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /***********************************************************************************************************************
 INCLUDE APPROPRIATE MCU AND BOARD FILES
 ***********************************************************************************************************************/
 #include    "mcu/all/r_bsp_common.h"
+#include    "mcu/all/r_compiler.h"
 #include    "r_bsp_config.h"
 #include    "r_bsp_interrupt_config.h"
-#include    "mcu/all/r_compiler.h"
 #if defined(__CCRX__)
 #include    "mcu/rx65n/register_access/ccrx/iodefine.h"
 #elif defined(__GNUC__)
@@ -76,11 +80,16 @@ INCLUDE APPROPRIATE MCU AND BOARD FILES
 #include "croutine.h"
 #include "timers.h"
 #include "event_groups.h"
+#include "message_buffer.h"
 #include "freertos_start.h"
 #elif BSP_CFG_RTOS_USED == 2    // SEGGER embOS
 #elif BSP_CFG_RTOS_USED == 3    // Micrium MicroC/OS
 #elif BSP_CFG_RTOS_USED == 4    // Renesas RI600V4 & RI600PX
 #else
+#endif
+
+#ifdef __cplusplus
+}
 #endif
 
 #endif /* BSP_BOARD_GENERIC_RX65N */

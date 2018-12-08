@@ -109,7 +109,7 @@ class OtaAfrProject:
         system_path = os.environ['PATH']
         # Add the tool_paths to the system PATH
         for path in self._buildConfig['tool_paths']:
-            os.environ['PATH'] += ';' + path
+            os.environ['PATH'] = path + os.pathsep + os.environ['PATH']
 
         buildCommands = self._buildConfig['commands']
         print('Building project {}...'.format(self._buildConfig['project_dir']))
@@ -122,6 +122,9 @@ class OtaAfrProject:
             print("ERROR: Could not find the output binary, the build might have failed.")
             raise Exception("Error building project check build_output.txt")
         print('Build finished, output: {}'.format(self._buildConfig['output']))
+
+        # We generate the factory image if applicable. This may depend on some build tool paths.
+        self.generateFactoryImage()
 
         # Restore the system path
         os.environ['PATH'] = system_path
@@ -220,6 +223,25 @@ class OtaAfrProject:
             # print(line) will place an extra newline character in the file.
             sys.stdout.write(line)
 
+    def setMqttLogsOn(self):
+        """Set the MQTT debug logs to on in aws_mqtt_config.h
+        """
+        self.__setIdentifierInFile(
+            { '#define mqttconfigENABLE_DEBUG_LOGS': '1' },
+            os.path.join(self._projectRootDir, self._boardPortablePath, 'common', 'config_files', 'aws_mqtt_config.h')
+        )
+
+    def setFreeRtosConfigNetworkInterface(self, networkInterface):
+        """Set the configNETWORK_INTERFACE_TO_USE in FreeRTOSConfig.h to networkInterface.
+        Args:
+            networkInterface (int): The number of the network interface
+        """
+        self.__setIdentifierInFile(
+            {
+                '#define configNETWORK_INTERFACE_TO_USE': str(networkInterface)
+            },
+            os.path.join(self._projectRootDir, self._boardPortablePath, 'common', 'config_files', 'FreeRTOSConfig.h')
+        )
         
     def setClientCredentialForThingName(self, thingName):
         """Set aws_clientcredential.h with the input thingName.
@@ -234,8 +256,8 @@ class OtaAfrProject:
         """
         self.__setIdentifierInFile(
             {
-                'static const char clientcredentialCLIENT_CERTIFICATE_PEM[] =': '\"' + certificate.replace('\n', '\\n') + '\";',
-                'static const char clientcredentialCLIENT_PRIVATE_KEY_PEM[] =': '\"' + privateKey.replace('\n', '\\n') + '\";'
+                '#define keyCLIENT_CERTIFICATE_PEM': '\"' + certificate.replace('\n', '\\n') + '\"',
+                '#define keyCLIENT_PRIVATE_KEY_PEM': '\"' + privateKey.replace('\n', '\\n') + '\"'
             },
             os.path.join(self._projectRootDir, OtaAfrProject.CLIENT_CREDENTIAL_KEYS_PATH)
         )

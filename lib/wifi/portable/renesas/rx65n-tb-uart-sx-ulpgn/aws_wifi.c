@@ -297,15 +297,22 @@ WIFIReturnCode_t WIFI_Ping( uint8_t * pucIPAddr,
 
 WIFIReturnCode_t WIFI_GetIP( uint8_t * pucIPAddr )
 {
-	int32_t ret;
+	int32_t ret, repetitions = 5;
 	if (pucIPAddr == NULL) {
 		return eWiFiFailure;
 	}
 
-	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+	while(repetitions-- > 0) {
+		xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
 
-    ret = sx_ulpgn_get_ip(pucIPAddr);
-	xSemaphoreGive(xControlSemaphore);
+		ret = sx_ulpgn_get_ip(pucIPAddr);
+		xSemaphoreGive(xControlSemaphore);
+		if (ret != 0 || *( ( uint32_t * ) pucIPAddr ) != 0) {
+			break;
+		} else {
+			vTaskDelay(1000);
+		}
+	}
 
     if (ret == 0) {
     	return eWiFiSuccess;
@@ -339,17 +346,23 @@ WIFIReturnCode_t WIFI_GetMAC( uint8_t * pucMac )
 WIFIReturnCode_t WIFI_GetHostIP( char * pcHost,
                                  uint8_t * pucIPAddr )
 {
-	int32_t ret;
+	int32_t ret, repetitions = 5;
 
 	if (pucIPAddr == NULL) {
 		return eWiFiFailure;
 	}
 
-	xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
 
-	ret = sx_ulpgn_dns_query(pcHost, pucIPAddr);
-
-	xSemaphoreGive(xControlSemaphore);
+	while (repetitions-- >= 0) {
+		xSemaphoreTake(xControlSemaphore, portMAX_DELAY);
+		ret = sx_ulpgn_dns_query(pcHost, pucIPAddr);
+		xSemaphoreGive(xControlSemaphore);
+		if (ret == 0 &&  *( ( uint32_t * ) pucIPAddr ) != 0) {
+			break;
+		} else {
+			vTaskDelay(1000);
+		}
+	}
 
 	if (ret == 0) {
 		return eWiFiSuccess;

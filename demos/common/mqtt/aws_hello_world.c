@@ -1,5 +1,5 @@
 /*
- * Amazon FreeRTOS MQTT Echo Demo V1.4.1
+ * Amazon FreeRTOS MQTT Echo Demo V1.4.4
  * Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -58,20 +58,30 @@
  * buffer.
  */
 
-/* Standard includes. */
-#include "string.h"
-#include "stdio.h"
+/* Trial use of StdAfx.h to check the availability of the header.
+ * This will be reverted later. */
+#if defined(__RX) || defined(__RX__)
 
-/* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "message_buffer.h"
+#include "StdAfx.h"
 
-/* MQTT includes. */
-#include "aws_mqtt_agent.h"
+#else /* defined(__RX) || defined(__RX__) */
 
-/* Credentials includes. */
-#include "aws_clientcredential.h"
+///* Standard includes. */
+//#include "string.h"
+//#include "stdio.h"
+//
+///* FreeRTOS includes. */
+//#include "FreeRTOS.h"
+//#include "task.h"
+//#include "message_buffer.h"
+//
+///* MQTT includes. */
+//#include "aws_mqtt_agent.h"
+//
+///* Credentials includes. */
+//#include "aws_clientcredential.h"
+
+#endif /* defined(__RX) || defined(__RX__) */
 
 /* Demo includes. */
 #include "aws_demo_config.h"
@@ -82,36 +92,36 @@
  *
  * It must be unique per MQTT broker.
  */
-#define echoCLIENT_ID          ( ( const uint8_t * ) "MQTTEcho" )
+#define echoCLIENT_ID            ( ( const uint8_t * ) "MQTTEcho" )
 
 /**
  * @brief The topic that the MQTT client both subscribes and publishes to.
  */
-#define echoTOPIC_NAME         ( ( const uint8_t * ) "freertos/demos/echo" )
+#define echoTOPIC_NAME           ( ( const uint8_t * ) "freertos/demos/echo" )
 
 /**
  * @brief The string appended to messages that are echoed back to the MQTT broker.
  *
  * It is also used to detect if a received message has already been acknowledged.
  */
-#define echoACK_STRING         ( ( const char * ) " ACK" )
+#define echoACK_STRING           ( ( const char * ) " ACK" )
 
 /**
  * @brief The length of the ACK string appended to messages that are echoed back
  * to the MQTT broker.
  */
-#define echoACK_STRING_LENGTH   4
+#define echoACK_STRING_LENGTH    4
 
 /**
  * @brief Dimension of the character array buffers used to hold data (strings in
  * this case) that is published to and received from the MQTT broker (in the cloud).
  */
-#define echoMAX_DATA_LENGTH    20
+#define echoMAX_DATA_LENGTH      20
 
 /**
  * @brief A block time of 0 simply means "don't block".
  */
-#define echoDONT_BLOCK         ( ( TickType_t ) 0 )
+#define echoDONT_BLOCK           ( ( TickType_t ) 0 )
 
 /*-----------------------------------------------------------*/
 
@@ -224,7 +234,7 @@ static BaseType_t prvCreateClientAndConnectToBroker( void )
         {
             /* Could not connect, so delete the MQTT client. */
             ( void ) MQTT_AGENT_Delete( xMQTTHandle );
-            configPRINTF( ( "ERROR:  MQTT echo failed to connect.\r\n" ) );
+            configPRINTF( ( "ERROR:  MQTT echo failed to connect with error %d.\r\n", xReturned ) );
         }
         else
         {
@@ -310,8 +320,8 @@ static void prvMessageEchoingTask( void * pvParameters )
                                                 portMAX_DELAY );
 
         /* Ensure the ACK can be added without overflowing the buffer.
-         * Note that xBytesReceived already includes null character as
-         * it is written to the message buffer in the MQTT callback. */
+        * Note that xBytesReceived already includes null character as
+        * it is written to the message buffer in the MQTT callback. */
         if( xBytesReceived <= ( sizeof( cDataBuffer ) - ( size_t ) echoACK_STRING_LENGTH ) )
         {
             /* Append ACK to the received message. Note that
@@ -435,7 +445,8 @@ static MQTTBool_t prvMQTTCallback( void * pvUserData,
 
 static void prvMQTTConnectAndPublishTask( void * pvParameters )
 {
-    BaseType_t x, xReturned;
+    BaseType_t xX;
+    BaseType_t xReturned;
     const TickType_t xFiveSeconds = pdMS_TO_TICKS( 5000UL );
     const BaseType_t xIterationsInAMinute = 60 / 5;
     TaskHandle_t xEchoingTask = NULL;
@@ -483,9 +494,9 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
     {
         /* MQTT client is now connected to a broker.  Publish a message
          * every five seconds until a minute has elapsed. */
-        for( x = 0; x < xIterationsInAMinute; x++ )
+        for( xX = 0; xX < xIterationsInAMinute; xX++ )
         {
-            prvPublishNextMessage( x );
+            prvPublishNextMessage( xX );
 
             /* Five seconds delay between publishes. */
             vTaskDelay( xFiveSeconds );
@@ -497,7 +508,7 @@ static void prvMQTTConnectAndPublishTask( void * pvParameters )
 
     /* End the demo by deleting all created resources. */
     configPRINTF( ( "MQTT echo demo finished.\r\n" ) );
-    configPRINTF( ("----Demo finished----\r\n") );
+    configPRINTF( ( "----Demo finished----\r\n" ) );
     vMessageBufferDelete( xEchoMessageBuffer );
     vTaskDelete( xEchoingTask );
     vTaskDelete( NULL ); /* Delete this task. */

@@ -33,14 +33,16 @@
 #include "FreeRTOSIPConfig.h"
 #include "list.h"
 //#include "FreeRTOS_IP.h"
-#include "aws_secure_sockets.h"
 //#include "FreeRTOS_Sockets.h"
+#include "aws_secure_sockets.h"
 #include "aws_tls.h"
 #include "task.h"
 #include "aws_pkcs11.h"
 #include "aws_crypto.h"
+
 #include "sx_ulpgn_driver.h"
 #include "machine.h"
+#include <string.h>
 
 /* Internal context structure. */
 typedef struct SSOCKETContext
@@ -71,6 +73,12 @@ typedef struct SSOCKETContext
  */
 static uint8_t ssockets_num_allocated = 0;
 
+/* Generate a randomized TCP Initial Sequence Number per RFC. */
+uint32_t ulApplicationGetNextSequenceNumber( 
+    uint32_t ulSourceAddress,
+    uint16_t usSourcePort,
+    uint32_t ulDestinationAddress,
+    uint16_t usDestinationPort );
 
 /*
  * @brief Network send callback.

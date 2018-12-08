@@ -37,6 +37,9 @@ Includes   <System Includes> , "Project Includes"
 #include "platform.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#if defined(ENABLE_UNIT_TESTS) || defined(AMAZON_FREERTOS_ENABLE_UNIT_TESTS)
+#include "unity.h"
+#endif
 
 
 #if (BSP_CFG_RTOS_USED == 1)
@@ -90,12 +93,12 @@ void Processing_Before_Start_Kernel(void);
 extern void main(void *pvParameters);
 
 /* Memory functions used by FreeRTOS. */
-//void vApplicationGetIdleTaskMemory(StaticTask_t ** ppxIdleTaskTCBBuffer,
-//                                   StackType_t ** ppxIdleTaskStackBuffer,
-//                                   uint32_t * pulIdleTaskStackSize );
-//void vApplicationGetTimerTaskMemory(StaticTask_t ** ppxTimerTaskTCBBuffer,
-//                                    StackType_t ** ppxTimerTaskStackBuffer,
-//                                    uint32_t * pulTimerTaskStackSize );
+void vApplicationGetIdleTaskMemory(StaticTask_t ** ppxIdleTaskTCBBuffer,
+                                   StackType_t ** ppxIdleTaskStackBuffer,
+                                   uint32_t * pulIdleTaskStackSize );
+void vApplicationGetTimerTaskMemory(StaticTask_t ** ppxTimerTaskTCBBuffer,
+                                    StackType_t ** ppxTimerTaskStackBuffer,
+                                    uint32_t * pulTimerTaskStackSize );
 
 
 /******************************************************************************
@@ -261,6 +264,42 @@ void vApplicationSetupTimerInterrupt(void)
 } /* End of function vApplicationSetupTimerInterrupt() */
 
 /******************************************************************************
+* Function name: sbrk
+* Description  : This implementation prevents using CC-RX's or GNURX+NEWLIB's
+*                malloc() and calloc() which are not thread safe.
+* Arguments    : size - not used
+* Return value : -1 (failure) but vAssertCalled() may not return
+******************************************************************************/
+#if defined(__CCRX__) || defined(__GNUC__)
+extern int8_t *sbrk(size_t size);
+int8_t *sbrk(size_t size)
+{
+    R_INTERNAL_NOT_USED(size);
+    vAssertCalled();
+    return (int8_t *)-1;
+}
+#endif
+
+/******************************************************************************
+* Function name: _top_of_heap
+* Description  : This implementation prevents using GNURX+OPTLIB's
+*                malloc() and calloc() which are not thread safe.
+* Arguments    : none
+* Return value : end (failure) but vAssertCalled() may not return
+******************************************************************************/
+#if defined(__GNUC__)
+extern int8_t end;
+int8_t *_heap_of_memory=(int8_t *)&end;
+int8_t *_last_heap_object=(int8_t *)&end;
+extern int8_t *_top_of_heap(void);
+int8_t *_top_of_heap(void)
+{
+    vAssertCalled();
+    return &end;
+}
+#endif
+
+/******************************************************************************
 * Function Name: vAssertCalled
 * Description  : This function is used to validate the input parameters.
 * Arguments    : None.
@@ -268,22 +307,27 @@ void vApplicationSetupTimerInterrupt(void)
 ******************************************************************************/
 void vAssertCalled(void)
 {
-#if(1)
-	return; // unity testing
+#if (0)
+    /* debugging with E1/E2/E2L emulator */
     volatile unsigned long ul = 0;
 
     taskENTER_CRITICAL();
     {
-        /* Use the debugger to set ul to a non-zero value in order to step out
+        /* Program may stop here when you stop it by debugger. In the case,
+        use the debugger to set ul to a non-zero value in order to step out
         of this function to determine why it was called. */
         while( 0 == ul )
         {
-            portNOP();
+            R_NOP();
         }
     }
     taskEXIT_CRITICAL();
+#elif defined(ENABLE_UNIT_TESTS) || defined(AMAZON_FREERTOS_ENABLE_UNIT_TESTS)
+    /* unity testing */
+    /* TEST_ABORT() of unity_internal.h (and also TEST_PASS() of unity.h)
+    jumps to the place where TEST_PROTECT() was executed. */
+    TEST_ABORT();
 #endif
-
 } /* End of function vAssertCalled() */
 
 /******************************************************************************

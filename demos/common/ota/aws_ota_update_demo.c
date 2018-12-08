@@ -1,5 +1,5 @@
 /*
-Amazon FreeRTOS OTA Update Demo V1.4.1
+Amazon FreeRTOS OTA Update Demo V1.4.4
 Copyright (C) 2017 Amazon.com, Inc. or its affiliates.  All Rights Reserved.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -36,28 +36,39 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  * the OTA agent. If not, it is simply ignored.
  */
 
-/* Standard includes. */
-#include <stdio.h>
-#include <string.h>
+/* Trial use of StdAfx.h to check the availability of the header.
+ * This will be reverted later. */
+#if defined(__RX) || defined(__RX__)
 
-/* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
+#include "StdAfx.h"
 
-/* MQTT include. */
-#include "aws_mqtt_agent.h"
+#else /* defined(__RX) || defined(__RX__) */
 
-/* Required to get the broker address and port. */
-#include "aws_clientcredential.h"
+///* Standard includes. */
+//#include <stdio.h>
+//#include <string.h>
+//
+///* FreeRTOS includes. */
+//#include "FreeRTOS.h"
+//#include "task.h"
+//#include "semphr.h"
+//
+///* MQTT include. */
+//#include "aws_mqtt_agent.h"
+//
+///* Required to get the broker address and port. */
+//#include "aws_clientcredential.h"
+//
+///* Amazon FreeRTOS OTA agent includes. */
+//#include "aws_ota_agent.h"
 
-/* Amazon FreeRTOS OTA agent includes. */
-#include "aws_ota_agent.h"
+//#include "aws_application_version.h"
+
+#endif /* defined(__RX) || defined(__RX__) */
 
 /* Required for demo task stack and priority */
 #include "aws_ota_update_demo.h"
 #include "aws_demo_config.h"
-#include "aws_application_version.h"
 
 static void App_OTACompleteCallback(OTA_JobEvent_t eEvent );
 
@@ -164,6 +175,8 @@ void vOTAUpdateDemoTask( void * pvParameters )
 
 static void App_OTACompleteCallback( OTA_JobEvent_t eEvent )
 {
+	OTA_Err_t xErr = kOTA_Err_Uninitialized;
+	
     if ( eEvent == eOTA_JobEvent_Activate )
     {
         configPRINTF( ( "Received eOTA_JobEvent_Activate callback from OTA Agent.\r\n" ) );
@@ -182,7 +195,11 @@ static void App_OTACompleteCallback( OTA_JobEvent_t eEvent )
 		 * this would be the place to kick off those tests before calling OTA_SetImageState()
 		 * with the final result of either accepted or rejected. */
         configPRINTF( ( "Received eOTA_JobEvent_StartTest callback from OTA Agent.\r\n" ) );
-		OTA_SetImageState (eOTA_ImageState_Accepted);
+	xErr = OTA_SetImageState (eOTA_ImageState_Accepted);
+        if( xErr != kOTA_Err_None )
+        {
+            OTA_LOG_L1( " Error! Failed to set image state as accepted.\r\n" );    
+        }
 	}
 }
 

@@ -75,7 +75,6 @@ static const char clientcredentialCLIENT_CERTIFICATE_PEM[] = \
  * "-----END CERTIFICATE-----\n"
  */
 
-
 /*
  * PEM-encoded client private key.
  *

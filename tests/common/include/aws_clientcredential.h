@@ -70,6 +70,6 @@ static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "a1odh71idddfl6.iot.u
  * Possible values are - eWiFiSecurityOpen, eWiFiSecurityWEP, eWiFiSecurityWPA,
  * eWiFiSecurityWPA2
  */
-#define clientcredentialWIFI_SECURITY   eWiFiSecurityWPA2
+#define clientcredentialWIFI_SECURITY                eWiFiSecurityWPA2
 
-#endif
+#endif /* ifndef __AWS_CLIENTCREDENTIAL__H__ */

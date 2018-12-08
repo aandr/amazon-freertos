@@ -57,6 +57,8 @@ typedef struct SSOCKETContext
     uint32_t ulServerCertificateLength;
 } SSOCKETContext_t, * SSOCKETContextPtr_t;
 
+List_t xBoundTCPSocketsList;
+
 /**
  * @brief Maximum number of sockets.
  *
@@ -676,6 +678,10 @@ static CK_RV prvSocketsGetCryptoSession( CK_SESSION_HANDLE *pxSession,
     return xResult;
 }
 /*-----------------------------------------------------------*/
+
+uint32_t ulRand() {
+	return 4; // TODO
+}
 
 /**
  * @brief Generate a TCP Initial Sequence Number that is reasonably difficult 
