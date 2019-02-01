@@ -215,12 +215,39 @@
 			</matcher>
 		</filter>
 		<filter>
+			<id>1544475841442</id>
+			<name>lib/aws/FreeRTOS/portable</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-true-(Renesas|MemMang)</arguments>
+			</matcher>
+		</filter>
+		<filter>
 			<id>1536905062046</id>
 			<name>lib/third_party/mcu_vendor/renesas</name>
 			<type>10</type>
 			<matcher>
 				<id>org.eclipse.ui.ide.multiFilter</id>
 				<arguments>1.0-name-matches-false-false-tools</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1544476402260</id>
+			<name>lib/aws/FreeRTOS/portable/MemMang</name>
+			<type>5</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-heap_4.c</arguments>
+			</matcher>
+		</filter>
+		<filter>
+			<id>1544475860173</id>
+			<name>lib/aws/FreeRTOS/portable/Renesas</name>
+			<type>9</type>
+			<matcher>
+				<id>org.eclipse.ui.ide.multiFilter</id>
+				<arguments>1.0-name-matches-false-false-RX600v2</arguments>
 			</matcher>
 		</filter>
 	</filteredResources>

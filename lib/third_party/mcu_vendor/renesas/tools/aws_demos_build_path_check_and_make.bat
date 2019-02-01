@@ -18,15 +18,18 @@ if exist ".\aws_demos_build_path_check.bat" (
     echo Error: Unable to find the project folder.
     goto ERROR
 )
-if exist "%pj%src\smc_gen\r_config\" (
-    set gen=smc
-) else if exist "%pj%r_config\" (
-    set gen=fit
-) else (
-    echo\
-    echo Error: Unable to find the r_config folder.
-    goto ERROR
-)
+set gen=smc
+
+rem if exist "..\..\common\application_code\smc_gen\r_config\" (
+rem    set gen=smc
+rem ) else if exist "%pj%r_config\" (
+rem     set gen=fit
+rem ) else (
+rem     echo\
+rem    echo Error: Unable to find the r_config folder.
+rem    goto ERROR
+rem )
+
 if %verbose%==1 echo IDE is %ide%
 if %verbose%==1 echo Project Folder is %pj%
 if %verbose%==1 echo Project Type is %gen%
