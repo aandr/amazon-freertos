@@ -33,28 +33,39 @@
  * by production ready key provisioning mechanism.
  */
 
-/* Standard includes. */
-#include <stdio.h>
-#include <string.h>
+/* Trial use of StdAfx.h to check the availability of the header.
+ * This will be reverted later. */
+#if defined(__RX) || defined(__RX__)
 
-/* FreeRTOS includes. */
-#include "FreeRTOS.h"
-#include "task.h"
-#include "semphr.h"
+#include "StdAfx.h"
 
-/* PKCS#11 includes. */
-#include "aws_pkcs11.h"
-#include "aws_pkcs11_config.h"
+#else /* defined(__RX) || defined(__RX__) */
 
-/* Client credential includes. */
-#include "aws_clientcredential.h"
-#include "aws_default_root_certificates.h"
+///* Standard includes. */
+//#include <stdio.h>
+//#include <string.h>
+//
+///* FreeRTOS includes. */
+//#include "FreeRTOS.h"
+//#include "task.h"
+//#include "semphr.h"
+//
+///* PKCS#11 includes. */
+//#include "aws_pkcs11.h"
+//#include "aws_pkcs11_config.h"
+//
+///* Client credential includes. */
+//#include "aws_clientcredential.h"
+//#include "aws_default_root_certificates.h"
+//
+///* Key provisioning includes. */
+//#include "aws_dev_mode_key_provisioning.h"
+//
+///* mbedTLS includes. */
+//#include "mbedtls/base64.h"
 
-/* Key provisioning includes. */
-#include "aws_dev_mode_key_provisioning.h"
+#endif /* defined(__RX) || defined(__RX__) */
 
-/* mbedTLS includes. */
-#include "mbedtls/base64.h"
 /*-----------------------------------------------------------*/
 
 /* For convenience and to enable rapid evaluation the keys are stored in const
@@ -62,20 +73,19 @@
  * PRODUCTION SYSTEMS WHICH MUST STORE KEYS SECURELY.  The variables declared
  * here are externed in aws_clientcredential_keys.h for access by other
  * modules. */
-
-// const char clientcredentialCLIENT_CERTIFICATE_PEM[] = keyCLIENT_CERTIFICATE_PEM;
-// const char * clientcredentialJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM = keyJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM;
-// const char clientcredentialCLIENT_PRIVATE_KEY_PEM[] = keyCLIENT_PRIVATE_KEY_PEM;
+const char clientcredentialCLIENT_CERTIFICATE_PEM[] = keyCLIENT_CERTIFICATE_PEM;
+const char * clientcredentialJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM = keyJITR_DEVICE_CERTIFICATE_AUTHORITY_PEM;
+const char clientcredentialCLIENT_PRIVATE_KEY_PEM[] = keyCLIENT_PRIVATE_KEY_PEM;
 
 /*
  * Length of device certificate included from aws_clientcredential_keys.h .
  */
-// const uint32_t clientcredentialCLIENT_CERTIFICATE_LENGTH = sizeof( clientcredentialCLIENT_CERTIFICATE_PEM );
+const uint32_t clientcredentialCLIENT_CERTIFICATE_LENGTH = sizeof( clientcredentialCLIENT_CERTIFICATE_PEM );
 
 /*
  * Length of device private key included from aws_clientcredential_keys.h .
  */
-// const uint32_t clientcredentialCLIENT_PRIVATE_KEY_LENGTH = sizeof( clientcredentialCLIENT_PRIVATE_KEY_PEM );
+const uint32_t clientcredentialCLIENT_PRIVATE_KEY_LENGTH = sizeof( clientcredentialCLIENT_PRIVATE_KEY_PEM );
 
 
 /* Key provisioning helper defines. */

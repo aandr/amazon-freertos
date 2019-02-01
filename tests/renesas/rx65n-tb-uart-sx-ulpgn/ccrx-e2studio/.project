@@ -55,6 +55,11 @@
 			<locationURI>virtual:/virtual</locationURI>
 		</link>
 		<link>
+			<name>application_code/renesas_code/RDP_v1.15_modified</name>
+			<type>2</type>
+			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified</locationURI>
+		</link>
+		<link>
 			<name>lib/aws/FreeRTOS</name>
 			<type>2</type>
 			<locationURI>AWS_IOT_MCU_ROOT/lib/FreeRTOS</locationURI>
@@ -158,41 +163,6 @@
 			<name>lib/third_party/unity</name>
 			<type>2</type>
 			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/unity</locationURI>
-		</link>
-		<link>
-			<name>src/FIT_modified_code/r_bsp</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified/r_bsp</locationURI>
-		</link>
-		<link>
-			<name>src/FIT_modified_code/r_byteq</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified/r_byteq</locationURI>
-		</link>
-		<link>
-			<name>src/FIT_modified_code/r_cmt_rx</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified/r_cmt_rx</locationURI>
-		</link>
-		<link>
-			<name>src/FIT_modified_code/r_flash_rx</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified/r_flash_rx</locationURI>
-		</link>
-		<link>
-			<name>src/FIT_modified_code/r_riic_rx</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified/r_riic_rx</locationURI>
-		</link>
-		<link>
-			<name>src/FIT_modified_code/r_sci_iic_rx</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified/r_sci_iic_rx</locationURI>
-		</link>
-		<link>
-			<name>src/FIT_modified_code/r_sci_rx</name>
-			<type>2</type>
-			<locationURI>AWS_IOT_MCU_ROOT/lib/third_party/mcu_vendor/renesas/FIT/RDP_v1.15_modified/r_sci_rx</locationURI>
 		</link>
 		<link>
 			<name>lib/aws/ota/aws_ota_agent.c</name>

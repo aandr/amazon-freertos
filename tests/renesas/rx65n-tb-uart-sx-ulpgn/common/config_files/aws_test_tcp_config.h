@@ -59,7 +59,7 @@
  *  @brief Indicates how long  receive needs to wait for data before Timeout happens.
  *
  */
-#define         integrationtestportableRECEIVE_TIMEOUT             2000  /* FIX ME. */
+#define         integrationtestportableRECEIVE_TIMEOUT             5000  /* FIX ME. */
 
 /**
  * @brief Indicates how long  send needs to wait before Timeout happens.

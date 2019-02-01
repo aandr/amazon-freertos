@@ -82,7 +82,7 @@ extern void vApplicationDaemonTaskStartupHook( void );
 #include <stdint.h>
 
 /* Project specific includes. (You can replace headers for your needs.) */
-#include "aws_demo_runner.h"
+//#include "include/aws_demo_runner.h"
 
 #ifdef __cplusplus
 }

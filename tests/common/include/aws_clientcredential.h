@@ -27,7 +27,6 @@
 #ifndef __AWS_CLIENTCREDENTIAL__H__
 #define __AWS_CLIENTCREDENTIAL__H__
 
-
 /*
  * Include for device certificate and private key
  */
@@ -41,7 +40,7 @@ static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "a1odh71idddfl6.iot.u
 
 /* Use of a "define" and not a "static const" here to be able to
 * use pre-compile concatenation on the string. */
-#define clientcredentialIOT_THING_NAME "RSK3"
+#define clientcredentialIOT_THING_NAME "RX65N-TB1"
 
 /*
  * Port number the MQTT broker is using.
@@ -70,6 +69,6 @@ static const char clientcredentialMQTT_BROKER_ENDPOINT[] = "a1odh71idddfl6.iot.u
  * Possible values are - eWiFiSecurityOpen, eWiFiSecurityWEP, eWiFiSecurityWPA,
  * eWiFiSecurityWPA2
  */
-#define clientcredentialWIFI_SECURITY                eWiFiSecurityWPA2
+#define clientcredentialWIFI_SECURITY   eWiFiSecurityWPA2
 
-#endif /* ifndef __AWS_CLIENTCREDENTIAL__H__ */
+#endif

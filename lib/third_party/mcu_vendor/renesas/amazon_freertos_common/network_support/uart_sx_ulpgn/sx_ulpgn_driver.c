@@ -1,4 +1,4 @@
- #include <stdio.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "FreeRTOS.h"
@@ -441,6 +441,8 @@ int32_t sx_ulpgn_socket_create(uint8_t socket_no, uint32_t type,uint32_t ipversi
 {
 	int32_t ret;
 
+	vTaskDelay(500);
+
     if( xSemaphoreTake( g_sx_ulpgn_semaphore, xMaxSemaphoreBlockTime ) == pdTRUE )
     {
 
@@ -465,9 +467,10 @@ int32_t sx_ulpgn_socket_create(uint8_t socket_no, uint32_t type,uint32_t ipversi
 #endif
 		ret = sx_ulpgn_get_socket_status(socket_no);
 
+
 		sprintf((char *)buff,"ATNSOCK=%d,%d\r",(uint8_t)(type),(uint8_t)(ipversion));
 
-		ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, buff, 10, 200, ULPGN_RETURN_OK);
+		ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, buff, 100, 2000, ULPGN_RETURN_OK);
 	//	ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, buff, 10, 200, ULPGN_RETURN_OK);
 		if(ret != 0 && ret != -2)
 		{
@@ -788,6 +791,8 @@ int32_t sx_ulpgn_tcp_disconnect(uint8_t socket_no)
 #if ULPGN_USE_UART_NUM == 2
 				R_BYTEQ_Flush(socket_byteq_hdl[socket_no]);
 #endif
+			} else {
+				return -1;
 			}
 			/* Give back the socketInUse mutex. */
 			( void ) xSemaphoreGive( g_sx_ulpgn_semaphore );
@@ -841,7 +846,7 @@ static int32_t sx_ulpgn_serial_send_basic(uint8_t serial_ch_id, uint8_t *ptextst
 	TickType_t tmptime1,tmptime2;
 #endif
 	memset(recvbuff, 0, sizeof(recvbuff));
-	vTaskDelay(100);
+	vTaskDelay(200);
 	volatile int32_t timeout;
 	sci_err_t ercd;
 	uint32_t recvcnt = 0;
@@ -982,7 +987,7 @@ static int32_t sx_ulpgn_get_socket_status(uint8_t socket_no)
 	char * str_ptr;
 	uint8_t str[3][10];
 
-	ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, "ATNSTAT\r", 3, 200, ULPGN_RETURN_OK);
+	ret = sx_ulpgn_serial_send_basic(ULPGN_UART_COMMAND_PORT, "ATNSTAT\r", 500, 2000, ULPGN_RETURN_OK);
 	if(ret != 0)
 	{
 		return -1;
@@ -1024,6 +1029,7 @@ static int32_t sx_ulpgn_change_socket_index(uint8_t socket_no)
 
 	if(socket_no != current_socket_index)
 	{
+		//vTaskDelay(100);
 		memset(buff, 0, sizeof(buff));
 		memset(recvbuff, 0, sizeof(recvbuff));
 		R_BSP_InterruptsDisable();
